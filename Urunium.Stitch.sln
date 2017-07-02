@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Urunium.Stitch", "src\Urunium.Stitch.csproj", "{CE6C46A5-F5E5-45FB-84CC-B31336217BE8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Urunium.Stitch.Tests", "tests\Urunium.Stitch.Tests.csproj", "{4A1BE5A7-41C9-4014-86CD-6B3CAFE7CB3B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{7155F7CC-57C1-4AEB-A556-706B21C648D5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{472AAEA2-413D-46C8-A1EE-B1EA3FE00B85}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CE6C46A5-F5E5-45FB-84CC-B31336217BE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE6C46A5-F5E5-45FB-84CC-B31336217BE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE6C46A5-F5E5-45FB-84CC-B31336217BE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE6C46A5-F5E5-45FB-84CC-B31336217BE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A1BE5A7-41C9-4014-86CD-6B3CAFE7CB3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A1BE5A7-41C9-4014-86CD-6B3CAFE7CB3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A1BE5A7-41C9-4014-86CD-6B3CAFE7CB3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A1BE5A7-41C9-4014-86CD-6B3CAFE7CB3B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CE6C46A5-F5E5-45FB-84CC-B31336217BE8} = {7155F7CC-57C1-4AEB-A556-706B21C648D5}
+		{4A1BE5A7-41C9-4014-86CD-6B3CAFE7CB3B} = {472AAEA2-413D-46C8-A1EE-B1EA3FE00B85}
+	EndGlobalSection
+EndGlobal
