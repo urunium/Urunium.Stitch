@@ -38,6 +38,7 @@ namespace Urunium.Stitch
                     OriginalContent = content,
                     TransformedContent = handler?.Build(content, fullModulePath, moduleId)
                 });
+                ProcessRequire(rootPath, package, package.Modules.Last());
             }
 
             if (packagerConfig.CopyFiles?.Length > 0)
@@ -50,9 +51,35 @@ namespace Urunium.Stitch
             return package;
         }
 
+        private void ProcessRequire(string rootPath, Package package, Module module)
+        {
+            string currentPath = _fileSystem.Path.GetDirectoryName(module.FullPath);
+            using (Microsoft.ClearScript.ScriptEngine engine = new Microsoft.ClearScript.V8.V8ScriptEngine())
+            {
+                Action<string> require = (entryPoint) =>
+                {
+                    string fullModulePath = _moduleFinder.FindModulePath(entryPoint, rootPath, currentPath);
+                    string moduleId = CalculateModuleId(rootPath, fullModulePath, entryPoint);
+                    string content = _fileSystem.File.ReadAllText(fullModulePath);
+                    var handler = _handlers.Where(x => x.Extensions.Contains(_fileSystem.Path.GetExtension(fullModulePath).Substring(1))).FirstOrDefault();
+                    package.Modules.Add(new Module
+                    {
+                        ModuleId = moduleId,
+                        FullPath = fullModulePath,
+                        OriginalContent = content,
+                        TransformedContent = handler?.Build(content, fullModulePath, moduleId)
+                    });
+                    ProcessRequire(rootPath, package, package.Modules.Last());
+                };
+                engine.AddHostObject("require", new Action<string>(require));
+                engine.Execute("(function(exports){try{" + module.TransformedContent + "}catch(e){}}({}));");
+            }
+        }
+
         private string CalculateModuleId(string rootPath, string moduleFullPath, string actualReferencedModule)
         {
             bool hasExtension = _fileSystem.Path.GetExtension(actualReferencedModule) != "";
+            var fileNameWithoutExtension = _fileSystem.Path.GetFileNameWithoutExtension(moduleFullPath);
             var calculatedModuleId = "";
             var modulePath = moduleFullPath.Replace("\\", "/");
             rootPath = rootPath.Replace("\\", "/");
@@ -61,11 +88,11 @@ namespace Urunium.Stitch
             {
                 calculatedModuleId = _fileSystem.Path.ChangeExtension(calculatedModuleId, null);
             }
-            if (calculatedModuleId.EndsWith("/index") && !actualReferencedModule.EndsWith("/index"))//Path.GetFileNameWithoutExtension(moduleFullPath) == "index")
+            if (calculatedModuleId.EndsWith($"/{fileNameWithoutExtension}") && !actualReferencedModule.EndsWith($"/{fileNameWithoutExtension}"))//Path.GetFileNameWithoutExtension(moduleFullPath) == "index")
             {
-                calculatedModuleId = calculatedModuleId.Replace("/index", "/");
+                calculatedModuleId = calculatedModuleId.Replace($"/{fileNameWithoutExtension}", "/");
             }
-
+            
             return calculatedModuleId;
         }
     }

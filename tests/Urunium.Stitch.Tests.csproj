@@ -63,6 +63,7 @@
     <Compile Include="ModuleFinderTest.cs" />
     <Compile Include="PackagerBasicTest.cs" />
     <Compile Include="PackagerCssModuleTest.cs" />
+    <Compile Include="PackagerRequireTests.cs" />
     <Compile Include="PackagerSassTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

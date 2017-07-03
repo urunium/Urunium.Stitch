@@ -27,6 +27,7 @@ namespace Urunium.Stitch.Tests
                             fileSystem: fileSystem,
                             handlers: new IFileHandler[]
                             {
+                                new BabelFilehandler()
                             });
             Package package = packager.Package(new PackagerConfig
             {
