@@ -57,8 +57,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApacheMimeTypes.cs" />
     <Compile Include="FileHandlers\BabelFilehandler.cs" />
     <Compile Include="CssToJsModule.cs" />
+    <Compile Include="FileHandlers\Base64FileHandler.cs" />
     <Compile Include="IFileHandler.cs" />
     <Compile Include="ModuleFinder.cs" />
     <Compile Include="Package.cs" />

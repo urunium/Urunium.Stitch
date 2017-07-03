@@ -308,5 +308,134 @@ namespace Urunium.Stitch.Tests
             Assert.AreEqual("Styles/app.less", package.Modules[7].ModuleId);
             Assert.AreEqual("Styles/app.scss", package.Modules[8].ModuleId);
         }
+
+        [Test]
+        public void PackagerCanProcessPngRequire()
+        {
+            byte[] imageData;
+            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            var resourceName = "Urunium.Stitch.Tests.img.png";
+
+            using (System.IO.Stream stream = assembly.GetManifestResourceStream(resourceName))
+            using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
+            {
+                stream.CopyTo(ms);
+                imageData = ms.ToArray();
+            }
+
+            var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
+            {
+                { @"c:\App\App.js", new MockFileData("import png from './img.png';export default ()=>`Hello`;") },
+                { @"c:\App\img.png", new MockFileData(imageData) }
+            });
+
+            var packager = new Packager(
+                            fileSystem: fileSystem,
+                            handlers: new IFileHandler[]
+                            {
+                                new BabelFilehandler(),
+                                new Base64FileHandler()
+                            });
+            Package package = packager.Package(new PackagerConfig
+            {
+                RootPath = @"c:\App",
+                EntryPoints = new[] { "./App" },
+                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
+            });
+            Assert.AreEqual(2, package.Modules.Count);
+
+            Assert.AreEqual("App", package.Modules[0].ModuleId);
+            Assert.AreEqual("img.png", package.Modules[1].ModuleId);
+        }
+
+        [Test]
+        public void PackagerCanProcessJpgRequire()
+        {
+            byte[] imageData;
+            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            var resourceName = "Urunium.Stitch.Tests.img.jpg";
+
+            using (System.IO.Stream stream = assembly.GetManifestResourceStream(resourceName))
+            using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
+            {
+                stream.CopyTo(ms);
+                imageData = ms.ToArray();
+            }
+
+            var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
+            {
+                { @"c:\App\App.js", new MockFileData("import png from './img.jpg';export default ()=>`Hello`;") },
+                { @"c:\App\img.jpg", new MockFileData(imageData) }
+            });
+
+            var packager = new Packager(
+                            fileSystem: fileSystem,
+                            handlers: new IFileHandler[]
+                            {
+                                new BabelFilehandler(),
+                                new Base64FileHandler()
+                            });
+            Package package = packager.Package(new PackagerConfig
+            {
+                RootPath = @"c:\App",
+                EntryPoints = new[] { "./App" },
+                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
+            });
+            Assert.AreEqual(2, package.Modules.Count);
+
+            Assert.AreEqual("App", package.Modules[0].ModuleId);
+            Assert.AreEqual("img.jpg", package.Modules[1].ModuleId);
+        }
+
+        [Test]
+        public void PackagerCanProcessMultipleImageRequire()
+        {
+            byte[] imageDataJpg;
+            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            var resourceName = "Urunium.Stitch.Tests.img.jpg";
+
+            using (System.IO.Stream stream = assembly.GetManifestResourceStream(resourceName))
+            using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
+            {
+                stream.CopyTo(ms);
+                imageDataJpg = ms.ToArray();
+            }
+
+            byte[] imageDataPng;
+            var resourceNamePng = "Urunium.Stitch.Tests.img.png";
+
+            using (System.IO.Stream stream = assembly.GetManifestResourceStream(resourceNamePng))
+            using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
+            {
+                stream.CopyTo(ms);
+                imageDataPng = ms.ToArray();
+            }
+
+            var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
+            {
+                { @"c:\App\App.js", new MockFileData("import jpg from './img.jpg';import png from './img.png';export default ()=>`Hello`;") },
+                { @"c:\App\img.jpg", new MockFileData(imageDataJpg) },
+                { @"c:\App\img.png", new MockFileData(imageDataPng) },
+            });
+
+            var packager = new Packager(
+                            fileSystem: fileSystem,
+                            handlers: new IFileHandler[]
+                            {
+                                new BabelFilehandler(),
+                                new Base64FileHandler()
+                            });
+            Package package = packager.Package(new PackagerConfig
+            {
+                RootPath = @"c:\App",
+                EntryPoints = new[] { "./App" },
+                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
+            });
+            Assert.AreEqual(3, package.Modules.Count);
+
+            Assert.AreEqual("App", package.Modules[0].ModuleId);
+            Assert.AreEqual("img.jpg", package.Modules[1].ModuleId);
+            Assert.AreEqual("img.png", package.Modules[2].ModuleId);
+        }
     }
 }

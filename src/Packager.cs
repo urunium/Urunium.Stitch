@@ -27,18 +27,7 @@ namespace Urunium.Stitch
             string currentPath = null;
             foreach (string entryPoint in packagerConfig.EntryPoints)
             {
-                string fullModulePath = _moduleFinder.FindModulePath(entryPoint, rootPath, currentPath);
-                string moduleId = CalculateModuleId(rootPath, fullModulePath, entryPoint);
-                string content = _fileSystem.File.ReadAllText(fullModulePath);
-                var handler = _handlers.Where(x => x.Extensions.Contains(_fileSystem.Path.GetExtension(fullModulePath).Substring(1))).FirstOrDefault();
-                package.Modules.Add(new Module
-                {
-                    ModuleId = moduleId,
-                    FullPath = fullModulePath,
-                    OriginalContent = content,
-                    TransformedContent = handler?.Build(content, fullModulePath, moduleId)
-                });
-                ProcessRequire(rootPath, package, package.Modules.Last());
+                ProcessModule(rootPath, package, entryPoint, currentPath);
             }
 
             if (packagerConfig.CopyFiles?.Length > 0)
@@ -58,22 +47,37 @@ namespace Urunium.Stitch
             {
                 Action<string> require = (entryPoint) =>
                 {
-                    string fullModulePath = _moduleFinder.FindModulePath(entryPoint, rootPath, currentPath);
-                    string moduleId = CalculateModuleId(rootPath, fullModulePath, entryPoint);
-                    string content = _fileSystem.File.ReadAllText(fullModulePath);
-                    var handler = _handlers.Where(x => x.Extensions.Contains(_fileSystem.Path.GetExtension(fullModulePath).Substring(1))).FirstOrDefault();
-                    package.Modules.Add(new Module
-                    {
-                        ModuleId = moduleId,
-                        FullPath = fullModulePath,
-                        OriginalContent = content,
-                        TransformedContent = handler?.Build(content, fullModulePath, moduleId)
-                    });
-                    ProcessRequire(rootPath, package, package.Modules.Last());
+                    ProcessModule(rootPath, package, entryPoint, currentPath);
                 };
                 engine.AddHostObject("require", new Action<string>(require));
                 engine.Execute("(function(exports){try{" + module.TransformedContent + "}catch(e){}}({}));");
             }
+        }
+
+        private void ProcessModule(string rootPath, Package package, string entryPoint, string currentPath)
+        {
+            string fullModulePath = _moduleFinder.FindModulePath(entryPoint, rootPath, currentPath);
+            string moduleId = CalculateModuleId(rootPath, fullModulePath, entryPoint);
+            string content;
+            var imageExtensions = ApacheMimeTypes.Apache.MimeTypes.Where(x => x.Value.StartsWith("image/")).Select(x => "." + x.Key);
+            if (imageExtensions.Contains(_fileSystem.Path.GetExtension(fullModulePath).ToLower()))
+            {
+                content = fullModulePath;
+                content = _fileSystem.File.ReadAllText(fullModulePath, Encoding.Default);
+            }
+            else
+            {
+                content = _fileSystem.File.ReadAllText(fullModulePath);
+            }
+            var handler = _handlers.Where(x => x.Extensions.Contains(_fileSystem.Path.GetExtension(fullModulePath).Substring(1))).FirstOrDefault();
+            package.Modules.Add(new Module
+            {
+                ModuleId = moduleId,
+                FullPath = fullModulePath,
+                OriginalContent = content,
+                TransformedContent = handler?.Build(content, fullModulePath, moduleId)
+            });
+            ProcessRequire(rootPath, package, package.Modules.Last());
         }
 
         private string CalculateModuleId(string rootPath, string moduleFullPath, string actualReferencedModule)
