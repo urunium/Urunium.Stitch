@@ -25,6 +25,19 @@ namespace Urunium.Stitch
             string rootPath = packagerConfig.RootPath;
             Package package = new Package();
             string currentPath = null;
+
+            if (packagerConfig.Globals?.Count > 0)
+            {
+                foreach (string moduleId in packagerConfig.Globals.Keys)
+                {
+                    package.Modules.Add(new Module
+                    {
+                        ModuleId = moduleId,
+                        TransformedContent = $"Object.defineProperty(exports, '__esModule', {{value: true}}); exports.default = {packagerConfig.Globals[moduleId]}"
+                    });
+                }
+            }
+
             foreach (string entryPoint in packagerConfig.EntryPoints)
             {
                 ProcessModule(rootPath, package, entryPoint, currentPath);

@@ -31,7 +31,7 @@ namespace Urunium.Stitch.Tests
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
-                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
+                
             });
             Assert.AreEqual(1, package.Modules.Count);
             Assert.AreEqual("var styleNode = document.querySelector('style[data-module=\"App\"]'); if(!styleNode){ styleNode = document.createElement('STYLE'); styleNode.type = 'text/css'; styleNode.dataset.module = 'App'; document.head.appendChild(styleNode); }  styleNode.innerHtml = '';  var styleText = document.createTextNode(\"body{background:red}\"); styleNode.appendChild(styleText);", package.Modules[0].TransformedContent);
@@ -56,7 +56,7 @@ namespace Urunium.Stitch.Tests
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
-                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
+                
             });
             Assert.AreEqual(1, package.Modules.Count);
             Assert.AreEqual("var styleNode = document.querySelector('style[data-module=\"App\"]'); if(!styleNode){ styleNode = document.createElement('STYLE'); styleNode.type = 'text/css'; styleNode.dataset.module = 'App'; document.head.appendChild(styleNode); }  styleNode.innerHtml = '';  var styleText = document.createTextNode(\"body{background:red}\"); styleNode.appendChild(styleText);", package.Modules[0].TransformedContent);
@@ -82,7 +82,7 @@ namespace Urunium.Stitch.Tests
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
-                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
+                
             });
             Assert.AreEqual(1, package.Modules.Count);
             Assert.AreEqual("var styleNode = document.querySelector('style[data-module=\"App\"]'); if(!styleNode){ styleNode = document.createElement('STYLE'); styleNode.type = 'text/css'; styleNode.dataset.module = 'App'; document.head.appendChild(styleNode); }  styleNode.innerHtml = '';  var styleText = document.createTextNode(\"body{border:1px solid green}body{background:red}\"); styleNode.appendChild(styleText);", package.Modules[0].TransformedContent);

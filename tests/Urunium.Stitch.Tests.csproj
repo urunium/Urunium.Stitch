@@ -64,6 +64,7 @@
     <Compile Include="PackagerBasicTest.cs" />
     <Compile Include="PackagerBase64ModuleTests.cs" />
     <Compile Include="PackagerCssModuleTest.cs" />
+    <Compile Include="PackagerGlobalModulesTest.cs" />
     <Compile Include="PackagerRequireTests.cs" />
     <Compile Include="PackagerSassTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

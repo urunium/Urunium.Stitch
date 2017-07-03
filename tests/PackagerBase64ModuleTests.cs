@@ -32,7 +32,7 @@ namespace Urunium.Stitch.Tests
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./img.gif" },
-                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
+                
             });
             Assert.AreEqual(1, package.Modules.Count);
             Assert.AreEqual("Object.defineProperty(exports, '__esModule', {value: true}); exports.default = \"data:image/gif;base64,R0lGODlhAQABAAAAACw=\"", package.Modules[0].TransformedContent);
@@ -69,7 +69,7 @@ namespace Urunium.Stitch.Tests
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./img.png" },
-                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
+                
             });
             Assert.AreEqual(1, package.Modules.Count);
             Assert.AreEqual("Object.defineProperty(exports, '__esModule', {value: true}); exports.default = \"data:image/png;base64," + base64 + "\"", package.Modules[0].TransformedContent);
@@ -107,7 +107,7 @@ namespace Urunium.Stitch.Tests
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./img.jpg" },
-                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
+                
             });
             Assert.AreEqual(1, package.Modules.Count);
             Assert.AreEqual("Object.defineProperty(exports, '__esModule', {value: true}); exports.default = \"data:image/jpeg;base64," + base64 + "\"", package.Modules[0].TransformedContent);

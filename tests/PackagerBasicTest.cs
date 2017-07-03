@@ -36,7 +36,7 @@ namespace Urunium.Stitch.Tests
                 Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } },
                 CopyFiles = new[] { "./font.ttf" }
             });
-            Assert.AreEqual(1, package.Modules.Count);
+            Assert.AreEqual(3, package.Modules.Count);
             Assert.AreEqual(1, package.Files.Count);
         }
 
@@ -61,8 +61,8 @@ namespace Urunium.Stitch.Tests
                 EntryPoints = new[] { "./App" },
                 Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
             });
-            Assert.AreEqual(1, package.Modules.Count);
-            Assert.AreEqual(@"'use strict';Object.defineProperty(exports, ""__esModule"", {  value: true});exports.default = function () {  return 'Hello';};", package.Modules[0].TransformedContent.Replace("\r\n", "").Replace("\n", ""));
+            Assert.AreEqual(3, package.Modules.Count);
+            Assert.AreEqual(@"'use strict';Object.defineProperty(exports, ""__esModule"", {  value: true});exports.default = function () {  return 'Hello';};", package.Modules[2].TransformedContent.Replace("\r\n", "").Replace("\n", ""));
         }
 
         [Test]
@@ -87,10 +87,12 @@ namespace Urunium.Stitch.Tests
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
-                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
+                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } },
             });
-            Assert.AreEqual(1, package.Modules.Count);
-            Assert.AreEqual("App", package.Modules[0].ModuleId);
+            Assert.AreEqual(3, package.Modules.Count);
+            Assert.AreEqual("react", package.Modules[0].ModuleId);
+            Assert.AreEqual("react-dom", package.Modules[1].ModuleId);
+            Assert.AreEqual("App", package.Modules[2].ModuleId);
 
             package = packager.Package(new PackagerConfig
             {
@@ -98,8 +100,10 @@ namespace Urunium.Stitch.Tests
                 EntryPoints = new[] { "./Module1" },
                 Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
             });
-            Assert.AreEqual(1, package.Modules.Count);
-            Assert.AreEqual("Module1/", package.Modules[0].ModuleId);
+            Assert.AreEqual(3, package.Modules.Count);
+            Assert.AreEqual("react", package.Modules[0].ModuleId);
+            Assert.AreEqual("react-dom", package.Modules[1].ModuleId);
+            Assert.AreEqual("Module1/", package.Modules[2].ModuleId);
 
             package = packager.Package(new PackagerConfig
             {
@@ -107,8 +111,10 @@ namespace Urunium.Stitch.Tests
                 EntryPoints = new[] { "./Module1/dir" },
                 Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
             });
-            Assert.AreEqual(1, package.Modules.Count);
-            Assert.AreEqual("Module1/dir/", package.Modules[0].ModuleId);
+            Assert.AreEqual(3, package.Modules.Count);
+            Assert.AreEqual("react", package.Modules[0].ModuleId);
+            Assert.AreEqual("react-dom", package.Modules[1].ModuleId);
+            Assert.AreEqual("Module1/dir/", package.Modules[2].ModuleId);
 
             package = packager.Package(new PackagerConfig
             {
@@ -116,8 +122,10 @@ namespace Urunium.Stitch.Tests
                 EntryPoints = new[] { "./Module1/dir/module" },
                 Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
             });
-            Assert.AreEqual(1, package.Modules.Count);
-            Assert.AreEqual("Module1/dir/module", package.Modules[0].ModuleId);
+            Assert.AreEqual(3, package.Modules.Count);
+            Assert.AreEqual("react", package.Modules[0].ModuleId);
+            Assert.AreEqual("react-dom", package.Modules[1].ModuleId);
+            Assert.AreEqual("Module1/dir/module", package.Modules[2].ModuleId);
 
         }
     }

@@ -31,7 +31,7 @@ namespace Urunium.Stitch.Tests
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
-                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
+                
             });
             Assert.AreEqual(2, package.Modules.Count);
 
@@ -59,7 +59,7 @@ namespace Urunium.Stitch.Tests
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
-                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
+                
             });
             Assert.AreEqual(3, package.Modules.Count);
 
@@ -87,8 +87,7 @@ namespace Urunium.Stitch.Tests
             Package package = packager.Package(new PackagerConfig
             {
                 RootPath = @"c:\App",
-                EntryPoints = new[] { "./App" },
-                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
+                EntryPoints = new[] { "./App" }
             });
             Assert.AreEqual(3, package.Modules.Count);
 
@@ -118,7 +117,7 @@ namespace Urunium.Stitch.Tests
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
-                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
+                
             });
             Assert.AreEqual(3, package.Modules.Count);
 
@@ -146,8 +145,7 @@ namespace Urunium.Stitch.Tests
             Package package = packager.Package(new PackagerConfig
             {
                 RootPath = @"c:\App",
-                EntryPoints = new[] { "./App" },
-                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
+                EntryPoints = new[] { "./App" }
             });
             Assert.AreEqual(2, package.Modules.Count);
 
@@ -175,7 +173,7 @@ namespace Urunium.Stitch.Tests
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
-                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
+                
             });
             Assert.AreEqual(2, package.Modules.Count);
 
@@ -203,7 +201,7 @@ namespace Urunium.Stitch.Tests
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
-                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
+                
             });
             Assert.AreEqual(2, package.Modules.Count);
 
@@ -231,7 +229,7 @@ namespace Urunium.Stitch.Tests
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
-                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
+                
             });
             Assert.AreEqual(2, package.Modules.Count);
 
@@ -259,7 +257,7 @@ namespace Urunium.Stitch.Tests
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
-                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
+                
             });
             Assert.AreEqual(2, package.Modules.Count);
 
@@ -294,7 +292,7 @@ namespace Urunium.Stitch.Tests
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
-                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
+                
             });
             Assert.AreEqual(9, package.Modules.Count);
 
@@ -339,8 +337,7 @@ namespace Urunium.Stitch.Tests
             Package package = packager.Package(new PackagerConfig
             {
                 RootPath = @"c:\App",
-                EntryPoints = new[] { "./App" },
-                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
+                EntryPoints = new[] { "./App" }
             });
             Assert.AreEqual(2, package.Modules.Count);
 
@@ -378,8 +375,7 @@ namespace Urunium.Stitch.Tests
             Package package = packager.Package(new PackagerConfig
             {
                 RootPath = @"c:\App",
-                EntryPoints = new[] { "./App" },
-                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
+                EntryPoints = new[] { "./App" }
             });
             Assert.AreEqual(2, package.Modules.Count);
 
@@ -429,7 +425,7 @@ namespace Urunium.Stitch.Tests
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
-                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
+                
             });
             Assert.AreEqual(3, package.Modules.Count);
 
