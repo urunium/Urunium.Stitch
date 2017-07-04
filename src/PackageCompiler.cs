@@ -7,20 +7,37 @@ using System.Threading.Tasks;
 
 namespace Urunium.Stitch
 {
+    /// <summary>
+    /// Bundles all modules in Package into one js file, and saves to destination directory. 
+    /// Also copies files marked for copying to destination directory
+    /// </summary>
     public class PackageCompiler
     {
-        private IFileSystem _fileSystem;
+        /// <summary>
+        /// File system where js and copy files will be saved.
+        /// </summary>
+        protected IFileSystem FileSystem { get; private set; }
 
+        /// <summary>
+        /// PackageCompiler ctor
+        /// </summary>
+        /// <param name="fileSystem"></param>
         public PackageCompiler(IFileSystem fileSystem)
         {
-            _fileSystem = fileSystem;
+            FileSystem = fileSystem;
         }
 
-        public void Compile(Package package, string destinationDirectory, string bundleFileName = "bundle.js")
+        /// <summary>
+        /// Bundles all modules in one js files, and copies all files in `package.Files` to a destination directory
+        /// </summary>
+        /// <param name="package"></param>
+        /// <param name="destinationDirectory"></param>
+        /// <param name="bundleFileName"></param>
+        public virtual void Compile(Package package, string destinationDirectory, string bundleFileName = "bundle.js")
         {
-            var Path = _fileSystem.Path;
-            var Directory = _fileSystem.Directory;
-            var File = _fileSystem.File;
+            var Path = FileSystem.Path;
+            var Directory = FileSystem.Directory;
+            var File = FileSystem.File;
             foreach (var file in package.Files)
             {
                 Directory.CreateDirectory(destinationDirectory);
@@ -44,7 +61,12 @@ namespace Urunium.Stitch
             }
         }
 
-        private string Bundle(Package package)
+        /// <summary>
+        /// Creates final js content out of package.Modules
+        /// </summary>
+        /// <param name="package"></param>
+        /// <returns></returns>
+        protected virtual string Bundle(Package package)
         {
             StringBuilder modulesCollector = new StringBuilder();
             modulesCollector.AppendLine("var modules = {");

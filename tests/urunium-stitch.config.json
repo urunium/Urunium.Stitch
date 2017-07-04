@@ -14,11 +14,11 @@
   },
   "Extendibility": {
     "DI": {
-      "IFileSystem": "MyFileSystem"
+      "IFileSystem": "MyFileSystem",
+      "PackageCompiler": "MyPackageCompiler"
     },
     "FileHandlers": [
 
-    ],
-    "PackageCompiler": ""
+    ]
   }
 }
