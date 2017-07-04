@@ -14,12 +14,7 @@ namespace Urunium.Stitch.FileHandlers
         public BabelFilehandler()
         {
             _engine = new Microsoft.ClearScript.V8.V8ScriptEngine();
-            var babelStandAlone = "";
-            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Urunium.Stitch.babel.min.js"))
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                babelStandAlone = reader.ReadToEnd();
-            }
+            string babelStandAlone = ResourceReader.Read("babel.min.js");
 
             _engine.Execute(babelStandAlone + "\n;var transform = Babel.transform;");
         }

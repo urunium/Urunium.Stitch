@@ -23,7 +23,7 @@ namespace Urunium.Stitch
         public Package Package(PackagerConfig packagerConfig)
         {
             string rootPath = packagerConfig.RootPath;
-            Package package = new Package();
+            Package package = new Package(rootPath);
             string currentPath = null;
 
             if (packagerConfig.Globals?.Count > 0)
@@ -38,9 +38,12 @@ namespace Urunium.Stitch
                 }
             }
 
-            foreach (string entryPoint in packagerConfig.EntryPoints)
+            if (packagerConfig.EntryPoints?.Length > 0)
             {
-                ProcessModule(rootPath, package, entryPoint, currentPath);
+                foreach (string entryPoint in packagerConfig.EntryPoints)
+                {
+                    ProcessModule(rootPath, package, entryPoint, currentPath);
+                }
             }
 
             if (packagerConfig.CopyFiles?.Length > 0)
@@ -109,7 +112,7 @@ namespace Urunium.Stitch
             {
                 calculatedModuleId = calculatedModuleId.Replace($"/{fileNameWithoutExtension}", "/");
             }
-            
+
             return calculatedModuleId;
         }
     }

@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ModuleFinderTest.cs" />
+    <Compile Include="PackageCompilationTests.cs" />
     <Compile Include="PackagerBasicTest.cs" />
     <Compile Include="PackagerBase64ModuleTests.cs" />
     <Compile Include="PackagerCssModuleTest.cs" />

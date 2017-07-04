@@ -64,11 +64,13 @@
     <Compile Include="IFileHandler.cs" />
     <Compile Include="ModuleFinder.cs" />
     <Compile Include="Package.cs" />
+    <Compile Include="PackageCompiler.cs" />
     <Compile Include="Packager.cs" />
     <Compile Include="PackagerConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FileHandlers\LessFileHandler.cs" />
     <Compile Include="FileHandlers\SassFileHandler.cs" />
+    <Compile Include="ResourceReader.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Licenses\ClearScript.main.license" />
@@ -79,7 +81,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="babel.min.js" />
+    <EmbeddedResource Include="Resources\babel.min.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\stitchIt.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
