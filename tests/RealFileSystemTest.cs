@@ -1,0 +1,36 @@
+﻿using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Urunium.Stitch.Tests
+{
+    [TestFixture]
+    public class RealFileSystemTest
+    {
+        [Test]
+        public void BuildWithRealFilesTest()
+        {
+            string location = System.IO.Path.GetFullPath(new Uri(System.IO.Path.GetDirectoryName(typeof(PackageBuilder).Assembly.CodeBase)).AbsolutePath);
+            string rootPath = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(location));
+            PackageBuilder.Package
+                .UseDefaultFileSystem()
+                .UseDefaultFileHandlers()
+                .UsePackagerConfig(new PackagerConfig
+                {
+                    RootPath = rootPath,
+                    EntryPoints = new[] { "./Views/App" }
+                })
+                .UseCompilerConfig(new PackageCompilerConfig
+                {
+                    DestinationDirectory = location,
+                    BundleFileName = "app.bundle.js"
+                })
+                .Build();
+
+            Assert.True(System.IO.File.Exists(System.IO.Path.Combine(location, "Views\\app.bundle.js")));
+        }
+    }
+}

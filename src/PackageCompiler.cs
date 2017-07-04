@@ -46,6 +46,7 @@ namespace Urunium.Stitch
                 string destinationFilePath = Path.GetFullPath(Path.Combine(destinationDirectory, file));
                 if (!File.Exists(destinationFilePath))
                 {
+                    Directory.CreateDirectory(Path.GetDirectoryName(destinationFilePath));
                     File.Create(destinationFilePath).Dispose();
                 }
                 File.Copy(sourceFilePath, destinationFilePath, true);
@@ -57,6 +58,11 @@ namespace Urunium.Stitch
                 string moduleId = package.Modules[0].ModuleId;
                 string bundleFilePath = Path.Combine(Path.GetDirectoryName(moduleId), bundleFileName);
                 bundleFilePath = Path.GetFullPath(Path.Combine(destinationDirectory, bundleFilePath));
+                if (!File.Exists(bundleFilePath))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(bundleFilePath));
+                    File.Create(bundleFilePath).Dispose();
+                }
                 File.WriteAllText(bundleFilePath, bundledContent);
             }
         }

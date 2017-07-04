@@ -38,17 +38,38 @@ namespace Urunium.Stitch.FileHandlers
 
             public bool DoesFileExist(string fileName)
             {
-                return FileSystem.File.Exists(FileSystem.Path.GetFullPath(fileName));
+                try
+                {
+                    return FileSystem.File.Exists(FileSystem.Path.GetFullPath(fileName));
+                }
+                catch
+                {
+                    return false;
+                }
             }
 
             public byte[] GetBinaryFileContents(string fileName)
             {
-                return FileSystem.File.ReadAllBytes(FileSystem.Path.GetFullPath(fileName));
+                try
+                {
+                    return FileSystem.File.ReadAllBytes(FileSystem.Path.GetFullPath(fileName));
+                }
+                catch
+                {
+                    return null;
+                }
             }
 
             public string GetFileContents(string fileName)
             {
-                return FileSystem.File.ReadAllText(FileSystem.Path.GetFullPath(fileName));
+                try
+                {
+                    return FileSystem.File.ReadAllText(FileSystem.Path.GetFullPath(fileName));
+                }
+                catch
+                {
+                    return null;
+                }
             }
         }
     }

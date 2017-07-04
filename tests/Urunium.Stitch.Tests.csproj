@@ -70,6 +70,7 @@
     <Compile Include="PackagerRequireTests.cs" />
     <Compile Include="PackagerSassTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RealFileSystemTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Licenses\ClearScript.main.license" />
@@ -95,6 +96,16 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="img.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\App.jsx" />
+    <Content Include="Views\NewTodoForm.jsx" />
+    <Content Include="Views\Styles\App.css" />
+    <Content Include="Views\TodoItem.jsx" />
+    <Content Include="Views\TodoList.jsx" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="Views\hints.d.ts" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
