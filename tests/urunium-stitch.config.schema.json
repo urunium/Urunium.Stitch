@@ -1,0 +1,85 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "title": "JSON Schema for my JSON file format",
+
+  "type": "object",
+  "required": ["Packager", "Compiler"],
+  "properties": {
+    "Packager": {
+      "type": "object",
+      "description": "Config to be passed when calling Packager.Package() method.",
+      "properties": {
+        "RootPath": {
+          "type": "string",
+          "description": "Root path, should support msbuild macros e.g. $(ProjectDir)"
+        },
+        "EntryPoints": {
+          "type": "array",
+          "description": "Array of entry files that needs to be bundled.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "Globals": {
+          "type": "object",
+          "patternProperties": {
+            ".*": {
+              "type": "string",
+              "description": "Global module"
+            }
+          }
+        },
+        "CopyFiles": {
+          "type": "array",
+          "description": "Array of entry files that needs to be copied.",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "Compiler": {
+      "type": "object",
+      "required": ["DestinationDirectory"],
+      "description": "config to be passed while calling PackageCompiler.Compile() method",
+      "properties": {
+        "DestinationDirectory": {
+          "type": "string",
+          "description": "Directory where packaged files need to be copied"
+        },
+        "BundleFileName": {
+          "type": "string",
+          "description": "Name of bundled js file"
+        }
+      }
+    },
+    "Extendibility": {
+      "type": "object",
+      "description": "Extendibility configurations",
+      "properties": {
+        "DI": {
+          "type": "object",
+          "description": "Dependency Injection registrations, allows to replace default implementations",
+          "patternProperties": {
+            ".*": {
+              "type": "string",
+              "description": "Interface -> Implementation map with fully qualified class names"
+            }
+          }
+        },
+        "FileHandlers": {
+          "type": "array",
+          "description": "List of Module Transformers",
+          "items": {
+            "type": "string",
+            "description": "Fully qualified name class names that implements IFileHandler interface"
+          }
+        },
+        "PackageCompiler": {
+          "type": "string",
+          "description": "Class that inherits from PackageCompiler"
+        }
+      }
+    }
+  }
+}

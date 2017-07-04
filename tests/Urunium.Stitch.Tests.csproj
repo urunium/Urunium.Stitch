@@ -77,6 +77,8 @@
     <None Include="Licenses\v8.v8.license" />
     <None Include="Licenses\v8.valgrind.license" />
     <None Include="packages.config" />
+    <None Include="urunium-stitch.config.json" />
+    <None Include="urunium-stitch.config.schema.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\src\Urunium.Stitch.csproj">
@@ -108,4 +110,9 @@ xcopy /s /y "$(SolutionDir)packages\ClearScript.V8.5.4.9\tools\native\amd64\*.*"
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\libsassnet.3.3.7\build\libsassnet.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\libsassnet.3.3.7\build\libsassnet.targets'))" />
   </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties urunium-stitch_1config_1json__JSONSchema="urunium-stitch.config.schema.json" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>
