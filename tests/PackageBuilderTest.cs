@@ -21,22 +21,23 @@ namespace Urunium.Stitch.Tests
                 { @"c:\App\App.js", new MockFileData("exports.default = ()=>'Hello';") },
                 { @"c:\App\font.ttf", new MockFileData("ttffilehere") }
             });
-            PackageBuilder.Package
+            Stitcher.Stitch
+                .Modules((modules) =>
+                {
+                    modules.RootedAt(@"c:\App");
+                    modules.EntryPoints(new[] { "./App" });
+                    modules.CopyFiles(new[] { "./font.ttf" });
+                }).Into((modules) =>
+                {
+                    modules.BundleAt(@"c:\Bundle");
+                    modules.BundleInto("app.bundle.js");
+                })
                 .WithFileSystem(fileSystem)
                 .AddFileHandler<BabelFilehandler>()
                 .AddFileHandler<LessFileHandler>()
                 .AddFileHandler<SassFileHandler>()
                 .AddFileHandler<Base64FileHandler>()
-                .UsePackagerConfig(new PackagerConfig
-                {
-                    RootPath = @"c:\App",
-                    EntryPoints = new[] { "./App" },
-                    CopyFiles = new[] { "./font.ttf" }
-                }).UseCompilerConfig(new PackageCompilerConfig
-                {
-                    DestinationDirectory = @"c:\Bundle",
-                    BundleFileName = "app.bundle.js"
-                }).Build();
+                .Sew();
 
             Assert.True(fileSystem.File.Exists(@"c:\Bundle\app.bundle.js"));
             Assert.True(fileSystem.File.Exists(@"c:\Bundle\font.ttf"));
@@ -50,23 +51,24 @@ namespace Urunium.Stitch.Tests
                 { @"c:\App\App.js", new MockFileData("import './font.ttf'; exports.default = ()=>'Hello';") },
                 { @"c:\App\font.ttf", new MockFileData("ttffilehere") }
             });
-            PackageBuilder.Package
+            Stitcher.Stitch
+                .Modules((modules) =>
+                {
+                    modules.RootedAt(@"c:\App");
+                    modules.EntryPoints(new[] { "./App" });
+                    modules.CopyFiles(new[] { "./font.ttf" });
+                }).Into((modules) =>
+                {
+                    modules.BundleAt(@"c:\Bundle");
+                    modules.BundleInto("app.bundle.js");
+                })
                 .WithFileSystem(fileSystem)
                 .AddFileHandler<BabelFilehandler>()
                 .AddFileHandler<LessFileHandler>()
                 .AddFileHandler<SassFileHandler>()
                 .AddFileHandler<Base64FileHandler>()
                 .AddFileHandler<TestFileHandler>()// Has dependency to Base64FileHandler
-                .UsePackagerConfig(new PackagerConfig
-                {
-                    RootPath = @"c:\App",
-                    EntryPoints = new[] { "./App" },
-                    CopyFiles = new[] { "./font.ttf" }
-                }).UseCompilerConfig(new PackageCompilerConfig
-                {
-                    DestinationDirectory = @"c:\Bundle",
-                    BundleFileName = "app.bundle.js"
-                }).Build();
+                .Sew();
 
             Assert.True(fileSystem.File.Exists(@"c:\Bundle\app.bundle.js"));
             Assert.True(fileSystem.File.Exists(@"c:\Bundle\font.ttf"));
@@ -81,7 +83,17 @@ namespace Urunium.Stitch.Tests
                 { @"c:\App\App.js", new MockFileData("import './font.ttf'; exports.default = ()=>'Hello';") },
                 { @"c:\App\font.ttf", new MockFileData("ttffilehere") }
             });
-            PackageBuilder.Package
+            Stitcher.Stitch
+                .Modules((modules) =>
+                {
+                    modules.RootedAt(@"c:\App");
+                    modules.EntryPoints(new[] { "./App" });
+                    modules.CopyFiles(new[] { "./font.ttf" });
+                }).Into((modules) =>
+                {
+                    modules.BundleAt(@"c:\Bundle");
+                    modules.BundleInto("app.bundle.js");
+                })
                 .WithFileSystem(fileSystem)
                 .AddFileHandler<BabelFilehandler>()
                 .AddFileHandler<LessFileHandler>()
@@ -89,16 +101,7 @@ namespace Urunium.Stitch.Tests
                 .AddFileHandler<Base64FileHandler>()
                 .WithPackageCompiler<MyPackageCompiler>() // custom PackageCompiler
                 .Register<ICommentWriter, CommentWriter>() // MyPackageCompiler dependency: If any extra dependency then we must register them
-                .UsePackagerConfig(new PackagerConfig
-                {
-                    RootPath = @"c:\App",
-                    EntryPoints = new[] { "./App" },
-                    CopyFiles = new[] { "./font.ttf" }
-                }).UseCompilerConfig(new PackageCompilerConfig
-                {
-                    DestinationDirectory = @"c:\Bundle",
-                    BundleFileName = "app.bundle.js"
-                }).Build();
+                .Sew();
 
             Assert.True(fileSystem.File.Exists(@"c:\Bundle\app.bundle.js"));
             Assert.True(fileSystem.File.Exists(@"c:\Bundle\font.ttf"));
@@ -109,8 +112,10 @@ namespace Urunium.Stitch.Tests
         [Test]
         public void BuildUsingConfigTest()
         {
-            PackageBuilder.Package
-                .BuildUsingConfig(new StitchConfig
+            var container = new TinyIoC.TinyIoCContainer();
+            Stitcher.Stitch
+                .UsingContainer(container)
+                .UsingConfig(new StitchConfig
                 {
                     Packager = new PackagerConfig
                     {
@@ -142,9 +147,9 @@ namespace Urunium.Stitch.Tests
                             "Urunium.Stitch.Tests.PackageBuilderTest+TestFileHandler, Urunium.Stitch.Tests",
                         }
                     }
-                });
+                }).Sew();
 
-            var fileSystem = TinyIoC.TinyIoCContainer.Current.Resolve<IFileSystem>();
+            var fileSystem = container.Resolve<IFileSystem>();
             Assert.True(fileSystem.File.Exists(@"c:\Bundle\app.bundle.js"));
             Assert.True(fileSystem.File.Exists(@"c:\Bundle\font.ttf"));
             Assert.True(fileSystem.File.ReadAllText(@"c:\Bundle\app.bundle.js").Contains("'font.ttf' : function(require, exports, module) "));
@@ -154,6 +159,7 @@ namespace Urunium.Stitch.Tests
         [Test]
         public void BuildUsingJsonConfigTest()
         {
+            var container = new TinyIoC.TinyIoCContainer();
             var config = @"{
                 'Packager': {
                     'RootPath': 'c:\\App',
@@ -179,10 +185,11 @@ namespace Urunium.Stitch.Tests
                     ]
                 }
             }";
-            PackageBuilder.Package
-                .BuildUsingJsonConfig(config);
+            Stitcher.Stitch
+                .UsingContainer(container)
+                .UsingJsonConfig(config).Sew();
 
-            var fileSystem = TinyIoC.TinyIoCContainer.Current.Resolve<IFileSystem>();
+            var fileSystem = container.Resolve<IFileSystem>();
             Assert.True(fileSystem.File.Exists(@"c:\Bundle\app.bundle.js"));
             Assert.True(fileSystem.File.Exists(@"c:\Bundle\font.ttf"));
             Assert.True(fileSystem.File.ReadAllText(@"c:\Bundle\app.bundle.js").Contains("'font.ttf' : function(require, exports, module) "));
@@ -192,23 +199,24 @@ namespace Urunium.Stitch.Tests
         [Test]
         public void WithFileSystemTest()
         {
-            PackageBuilder.Package
+            var container = new TinyIoC.TinyIoCContainer();
+            Stitcher.Stitch
+                .UsingContainer(container)
+                .Modules((modules) =>
+                {
+                    modules.RootedAt(@"c:\App");
+                    modules.EntryPoints(new[] { "./App" });
+                    modules.CopyFiles(new[] { "./font.ttf" });
+                }).Into((modules) =>
+                {
+                    modules.BundleAt(@"c:\Bundle");
+                    modules.BundleInto("app.bundle.js");
+                })
                 .WithFileSystem<MyMockFileSystem>()
                 .UseDefaultFileHandlers()
-                .UsePackagerConfig(new PackagerConfig
-                {
-                    RootPath = @"c:\App",
-                    EntryPoints = new[] { "./App" },
-                    CopyFiles = new[] { "./font.ttf" }
-                })
-                .UseCompilerConfig(new PackageCompilerConfig
-                {
-                    DestinationDirectory = @"c:\Bundle",
-                    BundleFileName = "app.bundle.js"
-                })
-                .Build();
+                .Sew();
 
-            var fileSystem = TinyIoC.TinyIoCContainer.Current.Resolve<IFileSystem>();
+            var fileSystem = container.Resolve<IFileSystem>();
             Assert.True(fileSystem.File.Exists(@"c:\Bundle\app.bundle.js"));
             Assert.True(fileSystem.File.Exists(@"c:\Bundle\font.ttf"));
         }

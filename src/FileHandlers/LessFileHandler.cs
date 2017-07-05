@@ -20,6 +20,7 @@ namespace Urunium.Stitch.FileHandlers
         public string Build(string content, string fullModulePath, string moduleId)
         {
             dotless.Core.EngineFactory factory = new dotless.Core.EngineFactory(new dotless.Core.configuration.DotlessConfiguration { Debug = true, ImportAllFilesAsLess = true, InlineCssFiles = true, MinifyOutput = true });
+            // Temporary solution until Pandora is exposed by Dotless.
             FileReader.FileSystem = _fileSystem;
             factory.Configuration.LessSource = typeof(FileReader);
             var engine = factory.GetEngine();

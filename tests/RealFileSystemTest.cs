@@ -13,22 +13,22 @@ namespace Urunium.Stitch.Tests
         [Test]
         public void BuildWithRealFilesTest()
         {
-            string location = System.IO.Path.GetFullPath(new Uri(System.IO.Path.GetDirectoryName(typeof(PackageBuilder).Assembly.CodeBase)).AbsolutePath);
+            string location = System.IO.Path.GetFullPath(new Uri(System.IO.Path.GetDirectoryName(typeof(Stitcher).Assembly.CodeBase)).AbsolutePath);
             string rootPath = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(location));
-            PackageBuilder.Package
-                .UseDefaultFileSystem()
+            Stitcher.Stitch
+                .Modules(modules => 
+                {
+                    modules.RootedAt(rootPath);
+                    modules.EntryPoints(new[] { "./Views/App" });
+                })
+                .Into((modules) => 
+                {
+                    modules.BundleAt(location);
+                    modules.BundleInto("app.bundle.js");
+                })
+                .UsingDefaultFileSystem()
                 .UseDefaultFileHandlers()
-                .UsePackagerConfig(new PackagerConfig
-                {
-                    RootPath = rootPath,
-                    EntryPoints = new[] { "./Views/App" }
-                })
-                .UseCompilerConfig(new PackageCompilerConfig
-                {
-                    DestinationDirectory = location,
-                    BundleFileName = "app.bundle.js"
-                })
-                .Build();
+                .Sew();
 
             Assert.True(System.IO.File.Exists(System.IO.Path.Combine(location, "Views\\app.bundle.js")));
         }
