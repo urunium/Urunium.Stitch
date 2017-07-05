@@ -28,7 +28,7 @@ namespace Urunium.Stitch.Tests
                             {
                                 new Base64FileHandler()
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./img.gif" },
@@ -65,7 +65,7 @@ namespace Urunium.Stitch.Tests
                             {
                                 new Base64FileHandler()
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./img.png" },
@@ -103,7 +103,7 @@ namespace Urunium.Stitch.Tests
                             {
                                 new Base64FileHandler()
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./img.jpg" },

@@ -1,16 +1,16 @@
 ﻿{
-  "Packager": {
-    "RootPath": "c:\\App",
-    "EntryPoints": [ "./App", "./About" ],
+  "From": {
     "CopyFiles": [ "./Fonts/fontawesome.ttf" ],
+    "EntryPoints": [ "./App", "./About" ],
     "Globals": {
       "react": "React",
       "react-dom": "ReactDOM"
-    }
+    },
+    "RootPath": "c:\\App"
   },
-  "Compiler": {
+  "Into": {
     "BundleFileName": "app.js",
-    "DestinationDirectory": "c:\\App\\Bundle"
+    "Directory": "c:\\App\\Bundle"
   },
   "Extendibility": {
     "DI": {

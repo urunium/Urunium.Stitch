@@ -29,11 +29,15 @@ namespace Urunium.Stitch.Tests
                             {
                                 new BabelFilehandler()
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
-                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } },
+                Globals = new GlobalsConfig
+                {
+                    ["react"] = "React",
+                    ["react-dom"] = "ReactDOM"
+                },
                 CopyFiles = new[] { "./font.ttf" }
             });
             Assert.AreEqual(3, package.Modules.Count);
@@ -55,11 +59,15 @@ namespace Urunium.Stitch.Tests
                             {
                                 new BabelFilehandler()
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
-                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
+                Globals = new GlobalsConfig
+                {
+                    ["react"] = "React",
+                    ["react-dom"] = "ReactDOM"
+                }
             });
             Assert.AreEqual(3, package.Modules.Count);
             Assert.AreEqual(@"'use strict';Object.defineProperty(exports, ""__esModule"", {  value: true});exports.default = function () {  return 'Hello';};", package.Modules[2].TransformedContent.Replace("\r\n", "").Replace("\n", ""));
@@ -83,44 +91,60 @@ namespace Urunium.Stitch.Tests
                             {
                                 new BabelFilehandler()
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
-                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } },
+                Globals = new GlobalsConfig
+                {
+                    ["react"] = "React",
+                    ["react-dom"] = "ReactDOM"
+                },
             });
             Assert.AreEqual(3, package.Modules.Count);
             Assert.AreEqual("react", package.Modules[0].ModuleId);
             Assert.AreEqual("react-dom", package.Modules[1].ModuleId);
             Assert.AreEqual("App", package.Modules[2].ModuleId);
 
-            package = packager.Package(new PackagerConfig
+            package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./Module1" },
-                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
+                Globals = new GlobalsConfig
+                {
+                    ["react"] = "React",
+                    ["react-dom"] = "ReactDOM"
+                }
             });
             Assert.AreEqual(3, package.Modules.Count);
             Assert.AreEqual("react", package.Modules[0].ModuleId);
             Assert.AreEqual("react-dom", package.Modules[1].ModuleId);
             Assert.AreEqual("Module1/", package.Modules[2].ModuleId);
 
-            package = packager.Package(new PackagerConfig
+            package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./Module1/dir" },
-                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
+                Globals = new GlobalsConfig
+                {
+                    ["react"] = "React",
+                    ["react-dom"] = "ReactDOM"
+                }
             });
             Assert.AreEqual(3, package.Modules.Count);
             Assert.AreEqual("react", package.Modules[0].ModuleId);
             Assert.AreEqual("react-dom", package.Modules[1].ModuleId);
             Assert.AreEqual("Module1/dir/", package.Modules[2].ModuleId);
 
-            package = packager.Package(new PackagerConfig
+            package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./Module1/dir/module" },
-                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } }
+                Globals = new GlobalsConfig
+                {
+                    ["react"] = "React",
+                    ["react-dom"] = "ReactDOM"
+                }
             });
             Assert.AreEqual(3, package.Modules.Count);
             Assert.AreEqual("react", package.Modules[0].ModuleId);

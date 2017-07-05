@@ -10,10 +10,10 @@ using Urunium.Stitch.FileHandlers;
 namespace Urunium.Stitch.Tests
 {
     [TestFixture]
-    public class PackageCompilationTests
+    public class PackageBundlingTests
     {
         [Test]
-        public void CompilingPackageShouldCreateDirectoryAndCopyFiles()
+        public void BundlingPackageShouldCreateDirectoryAndCopyFiles()
         {
             // Arrange
             var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
@@ -27,20 +27,20 @@ namespace Urunium.Stitch.Tests
                             {
                                 new BabelFilehandler()
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 CopyFiles = new[] { "./Fonts/font.ttf" }
             });
 
-            PackageCompiler compiler = new PackageCompiler(fileSystem);
-            compiler.Compile(package, destinationDirectory: @"c:\Bundle");
+            PackageBundler bundler = new PackageBundler(fileSystem);
+            bundler.CreateBundle(package, destinationDirectory: @"c:\Bundle");
 
             Assert.True(fileSystem.FileExists(@"c:\Bundle\Fonts\font.ttf"));
         }
 
         [Test]
-        public void CompilingPackageShouldCopyFilesToExistingDir()
+        public void BundlingPackageShouldCopyFilesToExistingDir()
         {
             // Arrange
             var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
@@ -55,20 +55,20 @@ namespace Urunium.Stitch.Tests
                             {
                                 new BabelFilehandler()
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 CopyFiles = new[] { "./Fonts/font.ttf" }
             });
 
-            PackageCompiler compiler = new PackageCompiler(fileSystem);
-            compiler.Compile(package, destinationDirectory: @"c:\Bundle");
+            PackageBundler bundler = new PackageBundler(fileSystem);
+            bundler.CreateBundle(package, destinationDirectory: @"c:\Bundle");
 
             Assert.True(fileSystem.FileExists(@"c:\Bundle\Fonts\font.ttf"));
         }
 
         [Test]
-        public void CompilingPackageShouldOverwriteExistingFiles()
+        public void BundlingPackageShouldOverwriteExistingFiles()
         {
             // Arrange
             var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
@@ -83,21 +83,21 @@ namespace Urunium.Stitch.Tests
                             {
                                 new BabelFilehandler()
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 CopyFiles = new[] { "./Fonts/font.ttf" }
             });
 
-            PackageCompiler compiler = new PackageCompiler(fileSystem);
-            compiler.Compile(package, destinationDirectory: @"c:\Bundle");
+            PackageBundler bundler = new PackageBundler(fileSystem);
+            bundler.CreateBundle(package, destinationDirectory: @"c:\Bundle");
 
             Assert.True(fileSystem.FileExists(@"c:\Bundle\Fonts\font.ttf"));
             Assert.AreEqual("ttffilehere", fileSystem.File.ReadAllText(@"c:\Bundle\Fonts\font.ttf"));
         }
 
         [Test]
-        public void CompilingPackageShouldBundleJs()
+        public void BundlingPackageShouldBundleJs()
         {
             // Arrange
             var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
@@ -113,22 +113,22 @@ namespace Urunium.Stitch.Tests
                             {
                                 new BabelFilehandler()
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./Views/App" },
                 CopyFiles = new[] { "./Views/Fonts/font.ttf" }
             });
 
-            PackageCompiler compiler = new PackageCompiler(fileSystem);
-            compiler.Compile(package, destinationDirectory: @"c:\Bundle");
+            PackageBundler bundler = new PackageBundler(fileSystem);
+            bundler.CreateBundle(package, destinationDirectory: @"c:\Bundle");
 
             Assert.True(fileSystem.FileExists(@"c:\Bundle\Views\bundle.js"));
             Assert.True(fileSystem.FileExists(@"c:\Bundle\Views\Fonts\font.ttf"));
         }
 
         [Test]
-        public void CompilingPackageShouldBundleJs_FlatDirectory()
+        public void BundlingPackageShouldBundleJs_FlatDirectory()
         {
             // Arrange
             var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
@@ -144,22 +144,22 @@ namespace Urunium.Stitch.Tests
                             {
                                 new BabelFilehandler()
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
                 CopyFiles = new[] { "./Fonts/font.ttf" }
             });
 
-            PackageCompiler compiler = new PackageCompiler(fileSystem);
-            compiler.Compile(package, destinationDirectory: @"c:\Bundle");
+            PackageBundler bundler = new PackageBundler(fileSystem);
+            bundler.CreateBundle(package, destinationDirectory: @"c:\Bundle");
 
             Assert.True(fileSystem.FileExists(@"c:\Bundle\bundle.js"));
             Assert.True(fileSystem.FileExists(@"c:\Bundle\Fonts\font.ttf"));
         }
 
         [Test]
-        public void CompilingPackageBundleAndCopyImage()
+        public void BundlingPackageBundleAndCopyImage()
         {
             // Arrange
             var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
@@ -176,15 +176,15 @@ namespace Urunium.Stitch.Tests
                             {
                                 new BabelFilehandler()
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
                 CopyFiles = new[] { "./Fonts/font.ttf", "./Images/image.gif" }
             });
 
-            PackageCompiler compiler = new PackageCompiler(fileSystem);
-            compiler.Compile(package, destinationDirectory: @"c:\Bundle");
+            PackageBundler bundler = new PackageBundler(fileSystem);
+            bundler.CreateBundle(package, destinationDirectory: @"c:\Bundle");
 
             Assert.AreEqual("Images/image.gif", package.Modules[2].ModuleId);
 

@@ -11,7 +11,7 @@ using Urunium.Stitch.FileHandlers;
 namespace Urunium.Stitch.Tests
 {
     [TestFixture]
-    public class PackageBuilderTest
+    public class StitcherTests
     {
         [Test]
         public void BuildTest()
@@ -22,15 +22,15 @@ namespace Urunium.Stitch.Tests
                 { @"c:\App\font.ttf", new MockFileData("ttffilehere") }
             });
             Stitcher.Stitch
-                .Modules((modules) =>
+                .From((source) =>
                 {
-                    modules.RootedAt(@"c:\App");
-                    modules.EntryPoints(new[] { "./App" });
-                    modules.CopyFiles(new[] { "./font.ttf" });
-                }).Into((modules) =>
+                    source.RootPath = @"c:\App";
+                    source.EntryPoints = new[] { "./App" };
+                    source.CopyFiles = new[] { "./font.ttf" };
+                }).Into((destination) =>
                 {
-                    modules.BundleAt(@"c:\Bundle");
-                    modules.BundleInto("app.bundle.js");
+                    destination.Directory = @"c:\Bundle";
+                    destination.BundleFileName = "app.bundle.js";
                 })
                 .WithFileSystem(fileSystem)
                 .AddFileHandler<BabelFilehandler>()
@@ -52,15 +52,15 @@ namespace Urunium.Stitch.Tests
                 { @"c:\App\font.ttf", new MockFileData("ttffilehere") }
             });
             Stitcher.Stitch
-                .Modules((modules) =>
+                .From((source) =>
                 {
-                    modules.RootedAt(@"c:\App");
-                    modules.EntryPoints(new[] { "./App" });
-                    modules.CopyFiles(new[] { "./font.ttf" });
-                }).Into((modules) =>
+                    source.RootPath = @"c:\App";
+                    source.EntryPoints = new[] { "./App" };
+                    source.CopyFiles = new[] { "./font.ttf" };
+                }).Into((destination) =>
                 {
-                    modules.BundleAt(@"c:\Bundle");
-                    modules.BundleInto("app.bundle.js");
+                    destination.Directory = @"c:\Bundle";
+                    destination.BundleFileName = "app.bundle.js";
                 })
                 .WithFileSystem(fileSystem)
                 .AddFileHandler<BabelFilehandler>()
@@ -76,7 +76,7 @@ namespace Urunium.Stitch.Tests
         }
 
         [Test]
-        public void BuildCustomPackageCompilerTest()
+        public void BuildCustomPackageBundlerTest()
         {
             IFileSystem fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
             {
@@ -84,57 +84,57 @@ namespace Urunium.Stitch.Tests
                 { @"c:\App\font.ttf", new MockFileData("ttffilehere") }
             });
             Stitcher.Stitch
-                .Modules((modules) =>
+                .From((source) =>
                 {
-                    modules.RootedAt(@"c:\App");
-                    modules.EntryPoints(new[] { "./App" });
-                    modules.CopyFiles(new[] { "./font.ttf" });
-                }).Into((modules) =>
+                    source.RootPath = @"c:\App";
+                    source.EntryPoints = new[] { "./App" };
+                    source.CopyFiles = new[] { "./font.ttf" };
+                }).Into((destination) =>
                 {
-                    modules.BundleAt(@"c:\Bundle");
-                    modules.BundleInto("app.bundle.js");
+                    destination.Directory = @"c:\Bundle";
+                    destination.BundleFileName = "app.bundle.js";
                 })
                 .WithFileSystem(fileSystem)
                 .AddFileHandler<BabelFilehandler>()
                 .AddFileHandler<LessFileHandler>()
                 .AddFileHandler<SassFileHandler>()
                 .AddFileHandler<Base64FileHandler>()
-                .WithPackageCompiler<MyPackageCompiler>() // custom PackageCompiler
-                .Register<ICommentWriter, CommentWriter>() // MyPackageCompiler dependency: If any extra dependency then we must register them
+                .WithPackageBundler<MyPackageBundler>() // custom PackageBundler
+                .Register<ICommentWriter, CommentWriter>() // MyPackageBundler dependency: If any extra dependency then we must register them
                 .Sew();
 
             Assert.True(fileSystem.File.Exists(@"c:\Bundle\app.bundle.js"));
             Assert.True(fileSystem.File.Exists(@"c:\Bundle\font.ttf"));
             Assert.True(fileSystem.File.ReadAllText(@"c:\Bundle\app.bundle.js").Contains("'font.ttf' : function(require, exports, module) "));
-            Assert.True(fileSystem.File.ReadAllText(@"c:\Bundle\app.bundle.js").Contains("// Comment added from MyPackageCompiler"));
+            Assert.True(fileSystem.File.ReadAllText(@"c:\Bundle\app.bundle.js").Contains("// Comment added from MyPackageBundler"));
         }
 
         [Test]
         public void BuildUsingConfigTest()
         {
-            var container = new TinyIoC.TinyIoCContainer();
+            var container = new Urunium.Stitch.TinyIoC.TinyIoCContainer();
             Stitcher.Stitch
                 .UsingContainer(container)
                 .UsingConfig(new StitchConfig
                 {
-                    Packager = new PackagerConfig
+                    From = new SourceConfig
                     {
                         RootPath = @"c:\App",
                         EntryPoints = new[] { "./App" },
                         CopyFiles = new[] { "./font.ttf" }
                     },
-                    Compiler = new PackageCompilerConfig
+                    Into = new DestinationConfig
                     {
-                        DestinationDirectory = @"c:\Bundle",
+                        Directory = @"c:\Bundle",
                         BundleFileName = "app.bundle.js"
                     },
                     Extendibility = new PackagerExtendibilityConfig
                     {
                         DI = new Dictionary<string, string>
                         {
-                            { "System.IO.Abstractions.IFileSystem, System.IO.Abstractions", "Urunium.Stitch.Tests.PackageBuilderTest+MyMockFileSystem, Urunium.Stitch.Tests" },
-                            { "Urunium.Stitch.PackageCompiler, Urunium.Stitch", "Urunium.Stitch.Tests.PackageBuilderTest+MyPackageCompiler, Urunium.Stitch.Tests" },
-                            { "Urunium.Stitch.Tests.PackageBuilderTest+ICommentWriter, Urunium.Stitch.Tests", "Urunium.Stitch.Tests.PackageBuilderTest+CommentWriter, Urunium.Stitch.Tests" }
+                            { "System.IO.Abstractions.IFileSystem, System.IO.Abstractions", "Urunium.Stitch.Tests.StitcherTests+MyMockFileSystem, Urunium.Stitch.Tests" },
+                            { "Urunium.Stitch.PackageBundler, Urunium.Stitch", "Urunium.Stitch.Tests.StitcherTests+MyPackageBundler, Urunium.Stitch.Tests" },
+                            { "Urunium.Stitch.Tests.StitcherTests+ICommentWriter, Urunium.Stitch.Tests", "Urunium.Stitch.Tests.StitcherTests+CommentWriter, Urunium.Stitch.Tests" }
                         },
                         FileHandlers = new List<string>
                         {
@@ -144,7 +144,7 @@ namespace Urunium.Stitch.Tests
                             "Urunium.Stitch.FileHandlers.SassFileHandler",
                             "Urunium.Stitch.FileHandlers.Base64FileHandler",
                             // extra handler
-                            "Urunium.Stitch.Tests.PackageBuilderTest+TestFileHandler, Urunium.Stitch.Tests",
+                            "Urunium.Stitch.Tests.StitcherTests+TestFileHandler, Urunium.Stitch.Tests",
                         }
                     }
                 }).Sew();
@@ -153,35 +153,35 @@ namespace Urunium.Stitch.Tests
             Assert.True(fileSystem.File.Exists(@"c:\Bundle\app.bundle.js"));
             Assert.True(fileSystem.File.Exists(@"c:\Bundle\font.ttf"));
             Assert.True(fileSystem.File.ReadAllText(@"c:\Bundle\app.bundle.js").Contains("'font.ttf' : function(require, exports, module) "));
-            Assert.True(fileSystem.File.ReadAllText(@"c:\Bundle\app.bundle.js").Contains("// Comment added from MyPackageCompiler"));
+            Assert.True(fileSystem.File.ReadAllText(@"c:\Bundle\app.bundle.js").Contains("// Comment added from MyPackageBundler"));
         }
 
         [Test]
         public void BuildUsingJsonConfigTest()
         {
-            var container = new TinyIoC.TinyIoCContainer();
+            var container = new Urunium.Stitch.TinyIoC.TinyIoCContainer();
             var config = @"{
-                'Packager': {
+                'From': {
                     'RootPath': 'c:\\App',
                     'EntryPoints': ['./App'],
                     'CopyFiles': ['./font.ttf']
                 },
-                'Compiler': {
-                    'DestinationDirectory': 'c:\\Bundle',
+                'Into': {
+                    'Directory': 'c:\\Bundle',
                     'BundleFileName': 'app.bundle.js'
                 },
                 'Extendibility': {
                     'DI': {
-                      'System.IO.Abstractions.IFileSystem, System.IO.Abstractions': 'Urunium.Stitch.Tests.PackageBuilderTest+MyMockFileSystem, Urunium.Stitch.Tests',
-                      'Urunium.Stitch.PackageCompiler, Urunium.Stitch': 'Urunium.Stitch.Tests.PackageBuilderTest+MyPackageCompiler, Urunium.Stitch.Tests',
-                      'Urunium.Stitch.Tests.PackageBuilderTest+ICommentWriter, Urunium.Stitch.Tests': 'Urunium.Stitch.Tests.PackageBuilderTest+CommentWriter, Urunium.Stitch.Tests'
+                      'System.IO.Abstractions.IFileSystem, System.IO.Abstractions': 'Urunium.Stitch.Tests.StitcherTests+MyMockFileSystem, Urunium.Stitch.Tests',
+                      'Urunium.Stitch.PackageBundler, Urunium.Stitch': 'Urunium.Stitch.Tests.StitcherTests+MyPackageBundler, Urunium.Stitch.Tests',
+                      'Urunium.Stitch.Tests.StitcherTests+ICommentWriter, Urunium.Stitch.Tests': 'Urunium.Stitch.Tests.StitcherTests+CommentWriter, Urunium.Stitch.Tests'
                     },
                     'FileHandlers': [
                             'Urunium.Stitch.FileHandlers.BabelFilehandler',
                             'Urunium.Stitch.FileHandlers.LessFileHandler',
                             'Urunium.Stitch.FileHandlers.SassFileHandler',
                             'Urunium.Stitch.FileHandlers.Base64FileHandler',
-                            'Urunium.Stitch.Tests.PackageBuilderTest+TestFileHandler, Urunium.Stitch.Tests'
+                            'Urunium.Stitch.Tests.StitcherTests+TestFileHandler, Urunium.Stitch.Tests'
                     ]
                 }
             }";
@@ -193,24 +193,54 @@ namespace Urunium.Stitch.Tests
             Assert.True(fileSystem.File.Exists(@"c:\Bundle\app.bundle.js"));
             Assert.True(fileSystem.File.Exists(@"c:\Bundle\font.ttf"));
             Assert.True(fileSystem.File.ReadAllText(@"c:\Bundle\app.bundle.js").Contains("'font.ttf' : function(require, exports, module) "));
-            Assert.True(fileSystem.File.ReadAllText(@"c:\Bundle\app.bundle.js").Contains("// Comment added from MyPackageCompiler"));
+            Assert.True(fileSystem.File.ReadAllText(@"c:\Bundle\app.bundle.js").Contains("// Comment added from MyPackageBundler"));
         }
 
         [Test]
         public void WithFileSystemTest()
         {
-            var container = new TinyIoC.TinyIoCContainer();
+            var container = new Urunium.Stitch.TinyIoC.TinyIoCContainer();
             Stitcher.Stitch
                 .UsingContainer(container)
-                .Modules((modules) =>
+                .From((source) =>
                 {
-                    modules.RootedAt(@"c:\App");
-                    modules.EntryPoints(new[] { "./App" });
-                    modules.CopyFiles(new[] { "./font.ttf" });
-                }).Into((modules) =>
+                    source.RootPath = @"c:\App";
+                    source.EntryPoints = new[] { "./App" };
+                    source.CopyFiles = new[] { "./font.ttf" };
+                }).Into((destination) =>
                 {
-                    modules.BundleAt(@"c:\Bundle");
-                    modules.BundleInto("app.bundle.js");
+                    destination.Directory = @"c:\Bundle";
+                    destination.BundleFileName = "app.bundle.js";
+                })
+                .WithFileSystem<MyMockFileSystem>()
+                .UseDefaultFileHandlers()
+                .Sew();
+
+            var fileSystem = container.Resolve<IFileSystem>();
+            Assert.True(fileSystem.File.Exists(@"c:\Bundle\app.bundle.js"));
+            Assert.True(fileSystem.File.Exists(@"c:\Bundle\font.ttf"));
+        }
+
+        [Test]
+        public void GlobalModulesTest()
+        {
+            var container = new Urunium.Stitch.TinyIoC.TinyIoCContainer();
+            Stitcher.Stitch
+                .UsingContainer(container)
+                .From((source) =>
+                {
+                    source.RootPath = @"c:\App";
+                    source.EntryPoints = new[] { "./App" };
+                    source.CopyFiles = new[] { "./font.ttf" };
+                    source.Globals = new GlobalsConfig
+                    {
+                        ["react"] = "React",
+                        ["react-dom"] = "ReactDOM"
+                    };
+                }).Into((destination) =>
+                {
+                    destination.Directory = @"c:\Bundle";
+                    destination.BundleFileName = "app.bundle.js";
                 })
                 .WithFileSystem<MyMockFileSystem>()
                 .UseDefaultFileHandlers()
@@ -237,19 +267,19 @@ namespace Urunium.Stitch.Tests
             }
         }
 
-        public class MyPackageCompiler : PackageCompiler
+        public class MyPackageBundler : PackageBundler
         {
             ICommentWriter _commentWriter;
-            public MyPackageCompiler(IFileSystem filesystem, ICommentWriter commentWriter) : base(filesystem)
+            public MyPackageBundler(IFileSystem filesystem, ICommentWriter commentWriter) : base(filesystem)
             {
                 _commentWriter = commentWriter;
             }
 
-            public override void Compile(Package package, string destinationDirectory, string bundleFileName = "bundle.js")
+            public override void CreateBundle(Package package, string destinationDirectory, string bundleFileName = "bundle.js")
             {
-                base.Compile(package, destinationDirectory, bundleFileName);
+                base.CreateBundle(package, destinationDirectory, bundleFileName);
                 string bundleJs = FileSystem.Path.GetFullPath(FileSystem.Path.Combine(destinationDirectory, bundleFileName));
-                _commentWriter.WriteSingleLineComment(bundleJs, "Comment added from MyPackageCompiler");
+                _commentWriter.WriteSingleLineComment(bundleJs, "Comment added from MyPackageBundler");
             }
         }
 

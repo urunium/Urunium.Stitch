@@ -20,7 +20,7 @@ namespace Urunium.Stitch
             _moduleFinder = new ModuleFinder(_fileSystem, _handlers.SelectMany(x => x.Extensions));
         }
 
-        public Package Package(PackagerConfig packagerConfig)
+        public Package Package(SourceConfig packagerConfig)
         {
             string rootPath = packagerConfig.RootPath;
             Package package = new Package(rootPath);

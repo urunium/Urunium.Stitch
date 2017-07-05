@@ -6,9 +6,7 @@ using System.Threading.Tasks;
 
 namespace Urunium.Stitch
 {
-    public class PackageCompilerConfig
+    public class GlobalsConfig : Dictionary<string, string>
     {
-        public string BundleFileName { get; set; }
-        public string DestinationDirectory { get; set; }
     }
 }

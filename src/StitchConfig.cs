@@ -8,8 +8,8 @@ namespace Urunium.Stitch
 {
     public class StitchConfig
     {
-        public PackagerConfig Packager { get; set; }
-        public PackageCompilerConfig Compiler { get; set; }
+        public SourceConfig From { get; set; }
+        public DestinationConfig Into { get; set; }
         public PackagerExtendibilityConfig Extendibility { get; set; }
     }
 }

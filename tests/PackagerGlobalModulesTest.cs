@@ -28,11 +28,15 @@ namespace Urunium.Stitch.Tests
                             {
                                 new BabelFilehandler()
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
-                Globals = new Dictionary<string, string> { { "react", "React" }, { "react-dom", "ReactDOM" } },
+                Globals = new GlobalsConfig
+                {
+                    ["react"] = "React",
+                    ["react-dom"] = "ReactDOM"
+                },
                 CopyFiles = new[] { "./font.ttf" }
             });
             Assert.AreEqual(3, package.Modules.Count);
@@ -55,14 +59,18 @@ namespace Urunium.Stitch.Tests
                             {
                                 new BabelFilehandler()
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
-                Globals = new Dictionary<string, string> { { "react", "React" } },
+                Globals = new GlobalsConfig
+                {
+                    ["react"] = "React",
+                    ["react-dom"] = "ReactDOM"
+                },
                 CopyFiles = new[] { "./font.ttf" }
             });
-            Assert.AreEqual(2, package.Modules.Count);
+            Assert.AreEqual(3, package.Modules.Count);
             Assert.AreEqual(1, package.Files.Count);
 
             Assert.AreEqual("Object.defineProperty(exports, '__esModule', {value: true}); exports.default = React", package.Modules[0].TransformedContent);

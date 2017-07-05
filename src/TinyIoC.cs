@@ -65,7 +65,7 @@
 #endif
 
 #endregion
-namespace TinyIoC
+namespace Urunium.Stitch.TinyIoC
 {
     using System;
     using System.Collections.Generic;

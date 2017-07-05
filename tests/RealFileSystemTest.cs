@@ -16,15 +16,15 @@ namespace Urunium.Stitch.Tests
             string location = System.IO.Path.GetFullPath(new Uri(System.IO.Path.GetDirectoryName(typeof(Stitcher).Assembly.CodeBase)).AbsolutePath);
             string rootPath = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(location));
             Stitcher.Stitch
-                .Modules(modules => 
+                .From(source =>
                 {
-                    modules.RootedAt(rootPath);
-                    modules.EntryPoints(new[] { "./Views/App" });
+                    source.RootPath = rootPath;
+                    source.EntryPoints = new[] { "./Views/App" };
                 })
-                .Into((modules) => 
+                .Into((dest) =>
                 {
-                    modules.BundleAt(location);
-                    modules.BundleInto("app.bundle.js");
+                    dest.Directory = location;
+                    dest.BundleFileName = "app.bundle.js";
                 })
                 .UsingDefaultFileSystem()
                 .UseDefaultFileHandlers()

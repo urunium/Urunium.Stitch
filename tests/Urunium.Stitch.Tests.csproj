@@ -64,8 +64,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ModuleFinderTest.cs" />
-    <Compile Include="PackageBuilderTest.cs" />
-    <Compile Include="PackageCompilationTests.cs" />
+    <Compile Include="StitcherTests.cs" />
+    <Compile Include="PackageBundlingTests.cs" />
     <Compile Include="PackagerBasicTest.cs" />
     <Compile Include="PackagerBase64ModuleTests.cs" />
     <Compile Include="PackagerCssModuleTest.cs" />

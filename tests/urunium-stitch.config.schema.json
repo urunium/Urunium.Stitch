@@ -3,9 +3,9 @@
   "title": "JSON Schema for my JSON file format",
 
   "type": "object",
-  "required": ["Packager", "Compiler"],
+  "required": [ "From", "Into" ],
   "properties": {
-    "Packager": {
+    "From": {
       "type": "object",
       "description": "Config to be passed when calling Packager.Package() method.",
       "properties": {
@@ -38,12 +38,12 @@
         }
       }
     },
-    "Compiler": {
+    "Into": {
       "type": "object",
-      "required": ["DestinationDirectory"],
+      "required": [ "Directory" ],
       "description": "config to be passed while calling PackageCompiler.Compile() method",
       "properties": {
-        "DestinationDirectory": {
+        "Directory": {
           "type": "string",
           "description": "Directory where packaged files need to be copied"
         },

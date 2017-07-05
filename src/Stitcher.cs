@@ -10,9 +10,9 @@ namespace Urunium.Stitch
 {
     public class Stitcher
     {
-        private TinyIoC.TinyIoCContainer _container;
-        private PackageCompilerConfig _packageCompilerConfig;
-        private PackagerConfig _packagerConfig;
+        private Urunium.Stitch.TinyIoC.TinyIoCContainer _container;
+        private DestinationConfig _destinationConfig;
+        private SourceConfig _sourceConfig;
         private List<Type> _fileHandlerTypes = new List<Type>();
         private bool _useDefaultFileHandlers = true;
 
@@ -20,8 +20,8 @@ namespace Urunium.Stitch
         {
         }
 
-        public static ModuleConfigurator Stitch => new ModuleConfigurator(new Stitcher());
-        
+        public static SourceConfigurator Stitch => new SourceConfigurator(new Stitcher());
+
         public Stitcher WithFileSystem(IFileSystem fileSystem)
         {
             _container.Register(fileSystem);
@@ -34,17 +34,18 @@ namespace Urunium.Stitch
             return this;
         }
 
-        public Stitcher WithPackageCompiler<TPackageCompiler>() where TPackageCompiler : PackageCompiler
+        public Stitcher WithPackageBundler<TPackageBundler>() where TPackageBundler : PackageBundler
         {
-            _container.Register<PackageCompiler, TPackageCompiler>();
+            _container.Register<PackageBundler, TPackageBundler>();
             return this;
         }
 
-        public Stitcher Register<RegisterType, RegisterImplementation>()
+        public Stitcher Register<RegisterType, RegisterImplementation>(Action<Urunium.Stitch.TinyIoC.TinyIoCContainer.RegisterOptions> callback = null)
             where RegisterType : class
             where RegisterImplementation : class, RegisterType
         {
-            _container.Register<RegisterType, RegisterImplementation>();
+            var options = _container.Register<RegisterType, RegisterImplementation>();
+            callback?.Invoke(options);
             return this;
         }
 
@@ -60,9 +61,9 @@ namespace Urunium.Stitch
             return this;
         }
 
-        private Stitcher UsingDefaultPackageCompiler()
+        private Stitcher UsingDefaultPackageBundler()
         {
-            return WithPackageCompiler<PackageCompiler>();
+            return WithPackageBundler<PackageBundler>();
         }
 
         public Stitcher AddFileHandler<THandler>() where THandler : class, IFileHandler
@@ -73,7 +74,7 @@ namespace Urunium.Stitch
             _fileHandlerTypes.Add(typeof(THandler));
             return this;
         }
-        
+
         public void Sew()
         {
             IFileSystem fileSystem;
@@ -82,9 +83,9 @@ namespace Urunium.Stitch
                 UsingDefaultFileSystem();
             }
 
-            if (!_container.CanResolve<PackageCompiler>())
+            if (!_container.CanResolve<PackageBundler>())
             {
-                UsingDefaultPackageCompiler();
+                UsingDefaultPackageBundler();
             }
 
             if (_useDefaultFileHandlers)
@@ -100,21 +101,21 @@ namespace Urunium.Stitch
 
             var packager = new Packager(fileSystem, _fileHandlerTypes.Select(x => _container.Resolve(x)).Cast<IFileHandler>().ToArray());
 
-            var package = packager.Package(_packagerConfig);
+            var package = packager.Package(_sourceConfig);
 
-            PackageCompiler compiler = _container.Resolve<PackageCompiler>();
-            compiler.Compile(package, _packageCompilerConfig.DestinationDirectory, _packageCompilerConfig.BundleFileName);
+            PackageBundler bundler = _container.Resolve<PackageBundler>();
+            bundler.CreateBundle(package, _destinationConfig.Directory, _destinationConfig.BundleFileName);
         }
 
-        private Stitcher UsingPackagerConfig(PackagerConfig packagerConfig)
+        private Stitcher UsingSourceConfig(SourceConfig packagerConfig)
         {
-            _packagerConfig = packagerConfig;
+            _sourceConfig = packagerConfig;
             return this;
         }
 
-        private Stitcher UsingPackageCompilerConfig(PackageCompilerConfig packageCompilerConfig)
+        private Stitcher UsingDestinationConfig(DestinationConfig destinationConfig)
         {
-            _packageCompilerConfig = packageCompilerConfig;
+            _destinationConfig = destinationConfig;
             return this;
         }
 
@@ -125,33 +126,33 @@ namespace Urunium.Stitch
 
         private Stitcher UsingConfig(StitchConfig config)
         {
-            if (config.Compiler == null)
+            if (config.Into == null)
             {
                 throw new Exception("Compiler config is required");
             }
 
-            if (string.IsNullOrWhiteSpace(config.Compiler.DestinationDirectory))
+            if (string.IsNullOrWhiteSpace(config.Into.Directory))
             {
                 throw new Exception("DestinationDirectory is required");
             }
 
-            if (config.Packager == null)
+            if (config.From == null)
             {
                 throw new Exception("Packager config is required");
             }
 
-            if (string.IsNullOrWhiteSpace(config.Packager.RootPath))
+            if (string.IsNullOrWhiteSpace(config.From.RootPath))
             {
                 throw new Exception("RootPath is required");
             }
 
-            if (((config.Packager.EntryPoints?.Length ?? 0) == 0) && (config.Packager.CopyFiles?.Length ?? 0) == 0)
+            if (((config.From.EntryPoints?.Length ?? 0) == 0) && (config.From.CopyFiles?.Length ?? 0) == 0)
             {
                 throw new Exception("EntryPoints or CopyFiles is required");
             }
 
-            _packagerConfig = config.Packager;
-            _packageCompilerConfig = config.Compiler;
+            _sourceConfig = config.From;
+            _destinationConfig = config.Into;
 
             if (config.Extendibility != null)
             {
@@ -179,30 +180,30 @@ namespace Urunium.Stitch
             return this;
         }
 
-        public class ModuleConfigurator
+        public class SourceConfigurator
         {
             Stitcher _stitcher;
-            internal ModuleConfigurator(Stitcher stitcher)
+            internal SourceConfigurator(Stitcher stitcher)
             {
                 _stitcher = stitcher;
             }
 
-            public ModuleConfigurator UsingContainer(TinyIoC.TinyIoCContainer container)
+            public SourceConfigurator UsingContainer(Urunium.Stitch.TinyIoC.TinyIoCContainer container)
             {
                 _stitcher._container = container;
                 return this;
             }
 
-            public DestinationConfigurator Modules(Action<ModuleConfigurationBuilder> configuratorCallback)
+            public DestinationConfigurator From(Action<SourceConfig> configuratorCallback)
             {
                 if (_stitcher._container == null)
                 {
-                    _stitcher._container = new TinyIoC.TinyIoCContainer();
+                    _stitcher._container = new Urunium.Stitch.TinyIoC.TinyIoCContainer();
                 }
 
-                var configBuilder = new ModuleConfigurationBuilder();
-                configuratorCallback(configBuilder);
-                _stitcher.UsingPackagerConfig(configBuilder.PackagerConfig);
+                var config = new SourceConfig();
+                configuratorCallback(config);
+                _stitcher.UsingSourceConfig(config);
                 return new DestinationConfigurator(_stitcher);
             }
 
@@ -216,32 +217,7 @@ namespace Urunium.Stitch
                 return _stitcher.UsingJsonConfig(config);
             }
         }
-
-        public class ModuleConfigurationBuilder
-        {
-            public PackagerConfig PackagerConfig { get; set; } = new PackagerConfig();
-
-            public void RootedAt(string rootPath)
-            {
-                PackagerConfig.RootPath = rootPath;
-            }
-
-            public void EntryPoints(string[] entryPoints)
-            {
-                PackagerConfig.EntryPoints = entryPoints;
-            }
-
-            public void CopyFiles(string[] copyFiles)
-            {
-                PackagerConfig.CopyFiles = copyFiles;
-            }
-
-            public void WithGlobalModules(List<ValueTuple<string, string>> globals)
-            {
-                PackagerConfig.Globals = globals.ToDictionary(t => t.Item1, t => t.Item2);
-            }
-        }
-
+        
         public class DestinationConfigurator
         {
             Stitcher _stitcher;
@@ -250,27 +226,12 @@ namespace Urunium.Stitch
                 _stitcher = stitcher;
             }
 
-            public Stitcher Into(Action<DestinationConfigurationBuilder> configuratorCallback)
+            public Stitcher Into(Action<DestinationConfig> configuratorCallback)
             {
-                var configBuilder = new DestinationConfigurationBuilder();
-                configuratorCallback(configBuilder);
-                _stitcher.UsingPackageCompilerConfig(configBuilder.Config);
+                var config = new DestinationConfig();
+                configuratorCallback(config);
+                _stitcher.UsingDestinationConfig(config);
                 return _stitcher;
-            }
-        }
-
-        public class DestinationConfigurationBuilder
-        {
-            public PackageCompilerConfig Config { get; private set; } = new PackageCompilerConfig();
-
-            public void BundleAt(string destinationFolder)
-            {
-                Config.DestinationDirectory = destinationFolder;
-            }
-
-            public void BundleInto(string bundleFileName)
-            {
-                Config.BundleFileName = bundleFileName;
             }
         }
     }

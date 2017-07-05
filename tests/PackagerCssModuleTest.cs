@@ -27,7 +27,7 @@ namespace Urunium.Stitch.Tests
                             {
                                 new LessFileHandler(fileSystem)
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
@@ -52,7 +52,7 @@ namespace Urunium.Stitch.Tests
                             {
                                 new LessFileHandler(fileSystem)
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
@@ -78,7 +78,7 @@ namespace Urunium.Stitch.Tests
                             {
                                 new LessFileHandler(fileSystem)
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },

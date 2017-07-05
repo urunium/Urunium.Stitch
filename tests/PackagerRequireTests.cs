@@ -27,7 +27,7 @@ namespace Urunium.Stitch.Tests
                             {
                                 new BabelFilehandler()
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
@@ -55,7 +55,7 @@ namespace Urunium.Stitch.Tests
                             {
                                 new BabelFilehandler()
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
@@ -84,7 +84,7 @@ namespace Urunium.Stitch.Tests
                             {
                                 new BabelFilehandler()
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" }
@@ -113,7 +113,7 @@ namespace Urunium.Stitch.Tests
                             {
                                 new BabelFilehandler()
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
@@ -142,7 +142,7 @@ namespace Urunium.Stitch.Tests
                                 new BabelFilehandler(),
                                 new LessFileHandler(fileSystem)
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" }
@@ -169,7 +169,7 @@ namespace Urunium.Stitch.Tests
                                 new BabelFilehandler(),
                                 new LessFileHandler(fileSystem)
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
@@ -197,7 +197,7 @@ namespace Urunium.Stitch.Tests
                                 new BabelFilehandler(),
                                 new LessFileHandler(fileSystem)
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
@@ -225,7 +225,7 @@ namespace Urunium.Stitch.Tests
                                 new BabelFilehandler(),
                                 new LessFileHandler(fileSystem)
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
@@ -253,7 +253,7 @@ namespace Urunium.Stitch.Tests
                                 new BabelFilehandler(),
                                 new LessFileHandler(fileSystem)
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
@@ -288,7 +288,7 @@ namespace Urunium.Stitch.Tests
                                 new BabelFilehandler(),
                                 new LessFileHandler(fileSystem)
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },
@@ -334,7 +334,7 @@ namespace Urunium.Stitch.Tests
                                 new BabelFilehandler(),
                                 new Base64FileHandler()
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" }
@@ -372,7 +372,7 @@ namespace Urunium.Stitch.Tests
                                 new BabelFilehandler(),
                                 new Base64FileHandler()
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" }
@@ -421,7 +421,7 @@ namespace Urunium.Stitch.Tests
                                 new BabelFilehandler(),
                                 new Base64FileHandler()
                             });
-            Package package = packager.Package(new PackagerConfig
+            Package package = packager.Package(new SourceConfig
             {
                 RootPath = @"c:\App",
                 EntryPoints = new[] { "./App" },

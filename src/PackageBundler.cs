@@ -11,7 +11,7 @@ namespace Urunium.Stitch
     /// Bundles all modules in Package into one js file, and saves to destination directory. 
     /// Also copies files marked for copying to destination directory
     /// </summary>
-    public class PackageCompiler
+    public class PackageBundler
     {
         /// <summary>
         /// File system where js and copy files will be saved.
@@ -22,7 +22,7 @@ namespace Urunium.Stitch
         /// PackageCompiler ctor
         /// </summary>
         /// <param name="fileSystem"></param>
-        public PackageCompiler(IFileSystem fileSystem)
+        public PackageBundler(IFileSystem fileSystem)
         {
             FileSystem = fileSystem;
         }
@@ -33,7 +33,7 @@ namespace Urunium.Stitch
         /// <param name="package"></param>
         /// <param name="destinationDirectory"></param>
         /// <param name="bundleFileName"></param>
-        public virtual void Compile(Package package, string destinationDirectory, string bundleFileName = "bundle.js")
+        public virtual void CreateBundle(Package package, string destinationDirectory, string bundleFileName = "bundle.js")
         {
             var Path = FileSystem.Path;
             var Directory = FileSystem.Directory;
