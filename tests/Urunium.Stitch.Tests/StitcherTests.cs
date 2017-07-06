@@ -6,7 +6,7 @@ using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Urunium.Stitch.FileHandlers;
+using Urunium.Stitch.ModuleTransformers;
 
 namespace Urunium.Stitch.Tests
 {
@@ -33,10 +33,10 @@ namespace Urunium.Stitch.Tests
                     destination.BundleFileName = "app.bundle.js";
                 })
                 .WithFileSystem(fileSystem)
-                .AddFileHandler<BabelFilehandler>()
-                .AddFileHandler<LessFileHandler>()
-                .AddFileHandler<SassFileHandler>()
-                .AddFileHandler<Base64FileHandler>()
+                .AddFileHandler<BabelModuleTransformer>()
+                .AddFileHandler<LessModuleTransformer>()
+                .AddFileHandler<SassModuleTransformer>()
+                .AddFileHandler<Base64ModuleTransformer>()
                 .Sew();
 
             Assert.True(fileSystem.File.Exists(@"c:\Bundle\app.bundle.js"));
@@ -63,11 +63,11 @@ namespace Urunium.Stitch.Tests
                     destination.BundleFileName = "app.bundle.js";
                 })
                 .WithFileSystem(fileSystem)
-                .AddFileHandler<BabelFilehandler>()
-                .AddFileHandler<LessFileHandler>()
-                .AddFileHandler<SassFileHandler>()
-                .AddFileHandler<Base64FileHandler>()
-                .AddFileHandler<TestFileHandler>()// Has dependency to Base64FileHandler
+                .AddFileHandler<BabelModuleTransformer>()
+                .AddFileHandler<LessModuleTransformer>()
+                .AddFileHandler<SassModuleTransformer>()
+                .AddFileHandler<Base64ModuleTransformer>()
+                .AddFileHandler<TestModuleTransformer>()// Has dependency to Base64FileHandler
                 .Sew();
 
             Assert.True(fileSystem.File.Exists(@"c:\Bundle\app.bundle.js"));
@@ -95,10 +95,10 @@ namespace Urunium.Stitch.Tests
                     destination.BundleFileName = "app.bundle.js";
                 })
                 .WithFileSystem(fileSystem)
-                .AddFileHandler<BabelFilehandler>()
-                .AddFileHandler<LessFileHandler>()
-                .AddFileHandler<SassFileHandler>()
-                .AddFileHandler<Base64FileHandler>()
+                .AddFileHandler<BabelModuleTransformer>()
+                .AddFileHandler<LessModuleTransformer>()
+                .AddFileHandler<SassModuleTransformer>()
+                .AddFileHandler<Base64ModuleTransformer>()
                 .WithPackageBundler<MyPackageBundler>() // custom PackageBundler
                 .Register<ICommentWriter, CommentWriter>() // MyPackageBundler dependency: If any extra dependency then we must register them
                 .Sew();
@@ -139,12 +139,12 @@ namespace Urunium.Stitch.Tests
                         FileHandlers = new List<string>
                         {
                             // default handlers
-                            "Urunium.Stitch.FileHandlers.BabelFilehandler",
-                            "Urunium.Stitch.FileHandlers.LessFileHandler",
-                            "Urunium.Stitch.FileHandlers.SassFileHandler",
-                            "Urunium.Stitch.FileHandlers.Base64FileHandler",
+                            "Urunium.Stitch.ModuleTransformers.BabelModuleTransformer",
+                            "Urunium.Stitch.ModuleTransformers.LessModuleTransformer",
+                            "Urunium.Stitch.ModuleTransformers.SassModuleTransformer",
+                            "Urunium.Stitch.ModuleTransformers.Base64ModuleTransformer",
                             // extra handler
-                            "Urunium.Stitch.Tests.StitcherTests+TestFileHandler, Urunium.Stitch.Tests",
+                            "Urunium.Stitch.Tests.StitcherTests+TestModuleTransformer, Urunium.Stitch.Tests",
                         }
                     }
                 }).Sew();
@@ -177,11 +177,11 @@ namespace Urunium.Stitch.Tests
                       'Urunium.Stitch.Tests.StitcherTests+ICommentWriter, Urunium.Stitch.Tests': 'Urunium.Stitch.Tests.StitcherTests+CommentWriter, Urunium.Stitch.Tests'
                     },
                     'FileHandlers': [
-                            'Urunium.Stitch.FileHandlers.BabelFilehandler',
-                            'Urunium.Stitch.FileHandlers.LessFileHandler',
-                            'Urunium.Stitch.FileHandlers.SassFileHandler',
-                            'Urunium.Stitch.FileHandlers.Base64FileHandler',
-                            'Urunium.Stitch.Tests.StitcherTests+TestFileHandler, Urunium.Stitch.Tests'
+                            'Urunium.Stitch.ModuleTransformers.BabelModuleTransformer',
+                            'Urunium.Stitch.ModuleTransformers.LessModuleTransformer',
+                            'Urunium.Stitch.ModuleTransformers.SassModuleTransformer',
+                            'Urunium.Stitch.ModuleTransformers.Base64ModuleTransformer',
+                            'Urunium.Stitch.Tests.StitcherTests+TestModuleTransformer, Urunium.Stitch.Tests'
                     ]
                 }
             }";
@@ -251,19 +251,20 @@ namespace Urunium.Stitch.Tests
             Assert.True(fileSystem.File.Exists(@"c:\Bundle\font.ttf"));
         }
 
-        public class TestFileHandler : IFileHandler
+        public class TestModuleTransformer : IModuleTransformer
         {
-            Base64FileHandler _base64Handler;
-            public TestFileHandler(Base64FileHandler base64Handler)
+            Base64ModuleTransformer _base64Handler;
+            public TestModuleTransformer(Base64ModuleTransformer base64Handler)
             {
                 _base64Handler = base64Handler;
             }
 
             public IEnumerable<string> Extensions => new[] { "ttf" };
-
-            public string Build(string content, string fullModulePath, string moduleId)
+            
+            public Module Transform(Module module)
             {
-                return _base64Handler.Build(content, fullModulePath, moduleId);
+                _base64Handler.Transform(module);
+                return module;
             }
         }
 

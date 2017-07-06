@@ -5,7 +5,7 @@ using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Urunium.Stitch.FileHandlers;
+using Urunium.Stitch.ModuleTransformers;
 
 namespace Urunium.Stitch.Tests
 {
@@ -23,9 +23,9 @@ namespace Urunium.Stitch.Tests
 
             var packager = new Packager(
                             fileSystem: fileSystem,
-                            handlers: new IFileHandler[]
+                            handlers: new IModuleTransformer[]
                             {
-                                new BabelFilehandler()
+                                new BabelModuleTransformer(fileSystem)
                             });
             Package package = packager.Package(new SourceConfig
             {
@@ -51,9 +51,9 @@ namespace Urunium.Stitch.Tests
 
             var packager = new Packager(
                             fileSystem: fileSystem,
-                            handlers: new IFileHandler[]
+                            handlers: new IModuleTransformer[]
                             {
-                                new BabelFilehandler()
+                                new BabelModuleTransformer(fileSystem)
                             });
             Package package = packager.Package(new SourceConfig
             {
@@ -79,9 +79,9 @@ namespace Urunium.Stitch.Tests
             
             var packager = new Packager(
                             fileSystem: fileSystem,
-                            handlers: new IFileHandler[]
+                            handlers: new IModuleTransformer[]
                             {
-                                new BabelFilehandler()
+                                new BabelModuleTransformer(fileSystem)
                             });
             Package package = packager.Package(new SourceConfig
             {
@@ -109,9 +109,9 @@ namespace Urunium.Stitch.Tests
 
             var packager = new Packager(
                             fileSystem: fileSystem,
-                            handlers: new IFileHandler[]
+                            handlers: new IModuleTransformer[]
                             {
-                                new BabelFilehandler()
+                                new BabelModuleTransformer(fileSystem)
                             });
             Package package = packager.Package(new SourceConfig
             {
@@ -140,9 +140,9 @@ namespace Urunium.Stitch.Tests
 
             var packager = new Packager(
                             fileSystem: fileSystem,
-                            handlers: new IFileHandler[]
+                            handlers: new IModuleTransformer[]
                             {
-                                new BabelFilehandler()
+                                new BabelModuleTransformer(fileSystem)
                             });
             Package package = packager.Package(new SourceConfig
             {
@@ -172,9 +172,9 @@ namespace Urunium.Stitch.Tests
 
             var packager = new Packager(
                             fileSystem: fileSystem,
-                            handlers: new IFileHandler[]
+                            handlers: new IModuleTransformer[]
                             {
-                                new BabelFilehandler()
+                                new BabelModuleTransformer(fileSystem)
                             });
             Package package = packager.Package(new SourceConfig
             {

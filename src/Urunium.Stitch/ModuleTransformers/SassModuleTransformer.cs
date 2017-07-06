@@ -6,20 +6,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Urunium.Stitch.FileHandlers
+namespace Urunium.Stitch.ModuleTransformers
 {
-    public class SassFileHandler : IFileHandler
+    public class SassModuleTransformer : IModuleTransformer
     {
         IFileSystem _fileSystem;
-        public SassFileHandler(IFileSystem fileSystem)
+
+        public SassModuleTransformer(IFileSystem fileSystem)
         {
             _fileSystem = fileSystem;
         }
 
         public IEnumerable<string> Extensions => new[] { "scss", "sass" };
 
-        public string Build(string content, string fullModulePath, string moduleId)
+        public Module Transform(Module module)
         {
+            string fullModulePath = module.FullPath;
+            string moduleId = module.ModuleId;
+            string content = module.TransformedContent ?? _fileSystem.File.ReadAllText(fullModulePath);
+
             LibSass.Compiler.SassCompiler compiler = new LibSass.Compiler.SassCompiler(new LibSass.Compiler.Options.SassOptions
             {
                 Data = content,
@@ -44,7 +49,9 @@ namespace Urunium.Stitch.FileHandlers
 
             CssToJsModule cssHandler = new CssToJsModule();
             var css = compiler.Compile().Output;
-            return cssHandler.Build(css, moduleId);
+            module.OriginalContent = module.OriginalContent ?? content;
+            module.TransformedContent = cssHandler.Build(css, moduleId);
+            return module;
         }
     }
 }

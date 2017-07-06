@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Urunium.Stitch
 {
-    public interface IFileHandler
+    public interface IModuleTransformer
     {
         /// <summary>
         /// Gets the file extension associated with this handler
@@ -16,8 +16,7 @@ namespace Urunium.Stitch
         /// <summary>
         /// Build the file content into CommonJS Module
         /// </summary>
-        /// <param name="content">The file content</param>
-        /// <returns>Content suitable for a CommonJS module</returns>
-        string Build(string content, string fullModulePath, string moduleId);
+        /// <param name="module"></param>
+        Module Transform(Module module);//string content, string fullModulePath, string moduleId);
     }
 }

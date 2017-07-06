@@ -4,6 +4,7 @@ using System.IO.Abstractions;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Urunium.Stitch.ModuleTransformers;
 
 namespace Urunium.Stitch
 {
@@ -11,13 +12,13 @@ namespace Urunium.Stitch
     {
         ModuleFinder _moduleFinder;
         IFileSystem _fileSystem;
-        IEnumerable<IFileHandler> _handlers;
-        public Packager(IFileSystem fileSystem, IEnumerable<IFileHandler> handlers)
+        IEnumerable<IModuleTransformer> _transformers;
+        public Packager(IFileSystem fileSystem, IEnumerable<IModuleTransformer> handlers)
         {
             _fileSystem = fileSystem;
-            _handlers = handlers;
+            _transformers = handlers;
 
-            _moduleFinder = new ModuleFinder(_fileSystem, _handlers.SelectMany(x => x.Extensions));
+            _moduleFinder = new ModuleFinder(_fileSystem, _transformers.SelectMany(x => x.Extensions));
         }
 
         public Package Package(SourceConfig packagerConfig)
@@ -74,26 +75,27 @@ namespace Urunium.Stitch
         {
             string fullModulePath = _moduleFinder.FindModulePath(entryPoint, rootPath, currentPath);
             string moduleId = CalculateModuleId(rootPath, fullModulePath, entryPoint);
-            string content;
-            var imageExtensions = ApacheMimeTypes.Apache.MimeTypes.Where(x => x.Value.StartsWith("image/")).Select(x => "." + x.Key);
-            if (imageExtensions.Contains(_fileSystem.Path.GetExtension(fullModulePath).ToLower()))
-            {
-                content = fullModulePath;
-                content = _fileSystem.File.ReadAllText(fullModulePath, Encoding.Default);
-            }
-            else
-            {
-                content = _fileSystem.File.ReadAllText(fullModulePath);
-            }
-            var handler = _handlers.Where(x => x.Extensions.Contains(_fileSystem.Path.GetExtension(fullModulePath).Substring(1))).FirstOrDefault();
-            package.Modules.Add(new Module
+            
+            Module module = TransformModule(new Module
             {
                 ModuleId = moduleId,
-                FullPath = fullModulePath,
-                OriginalContent = content,
-                TransformedContent = handler?.Build(content, fullModulePath, moduleId)
+                FullPath = fullModulePath
             });
+
+            package.Modules.Add(module);
             ProcessRequire(rootPath, package, package.Modules.Last());
+        }
+
+        private Module TransformModule(Module module)
+        {
+            var transformers = _transformers.Where(x => x.Extensions.Contains(_fileSystem.Path.GetExtension(module.FullPath).Substring(1))).Concat(Enumerable.Repeat(new DefaultModuleTransformer(_fileSystem), 1));
+
+            foreach (var transformer in transformers)
+            {
+                module = transformer.Transform(module);
+            }
+
+            return module;
         }
 
         private string CalculateModuleId(string rootPath, string moduleFullPath, string actualReferencedModule)

@@ -61,12 +61,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApacheMimeTypes.cs" />
+    <Compile Include="ModuleTransformers\DefaultModuleTransformer.cs" />
     <Compile Include="GlobalsConfig.cs" />
     <Compile Include="PackagerExtendibilityConfig.cs" />
-    <Compile Include="FileHandlers\BabelFilehandler.cs" />
+    <Compile Include="ModuleTransformers\BabelModuleTransformer.cs" />
     <Compile Include="CssToJsModule.cs" />
-    <Compile Include="FileHandlers\Base64FileHandler.cs" />
-    <Compile Include="IFileHandler.cs" />
+    <Compile Include="ModuleTransformers\Base64ModuleTransformer.cs" />
+    <Compile Include="IModuleTransformer.cs" />
     <Compile Include="ModuleFinder.cs" />
     <Compile Include="Package.cs" />
     <Compile Include="PackageBundler.cs" />
@@ -75,8 +76,8 @@
     <Compile Include="Stitcher.cs" />
     <Compile Include="SourceConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="FileHandlers\LessFileHandler.cs" />
-    <Compile Include="FileHandlers\SassFileHandler.cs" />
+    <Compile Include="ModuleTransformers\LessModuleTransformer.cs" />
+    <Compile Include="ModuleTransformers\SassModuleTransformer.cs" />
     <Compile Include="ResourceReader.cs" />
     <Compile Include="StitchConfig.cs" />
     <Compile Include="TinyIoC.cs" />

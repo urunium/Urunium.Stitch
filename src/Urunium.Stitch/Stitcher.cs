@@ -4,7 +4,7 @@ using System.IO.Abstractions;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Urunium.Stitch.FileHandlers;
+using Urunium.Stitch.ModuleTransformers;
 
 namespace Urunium.Stitch
 {
@@ -66,7 +66,7 @@ namespace Urunium.Stitch
             return WithPackageBundler<PackageBundler>();
         }
 
-        public Stitcher AddFileHandler<THandler>() where THandler : class, IFileHandler
+        public Stitcher AddFileHandler<THandler>() where THandler : class, IModuleTransformer
 
         {
             _useDefaultFileHandlers = false;
@@ -91,15 +91,15 @@ namespace Urunium.Stitch
             if (_useDefaultFileHandlers)
             {
                 _fileHandlerTypes.Clear();
-                AddFileHandler<BabelFilehandler>()
-                    .AddFileHandler<LessFileHandler>()
-                    .AddFileHandler<SassFileHandler>()
-                    .AddFileHandler<Base64FileHandler>();
+                AddFileHandler<BabelModuleTransformer>()
+                    .AddFileHandler<LessModuleTransformer>()
+                    .AddFileHandler<SassModuleTransformer>()
+                    .AddFileHandler<Base64ModuleTransformer>();
             }
 
             fileSystem = _container.Resolve<IFileSystem>();
 
-            var packager = new Packager(fileSystem, _fileHandlerTypes.Select(x => _container.Resolve(x)).Cast<IFileHandler>().ToArray());
+            var packager = new Packager(fileSystem, _fileHandlerTypes.Select(x => _container.Resolve(x)).Cast<IModuleTransformer>().ToArray());
 
             var package = packager.Package(_sourceConfig);
 
