@@ -49,7 +49,7 @@ namespace Urunium.Stitch
             return this;
         }
 
-        public Stitcher UseDefaultFileHandlers()
+        public Stitcher UsingDefaultFileHandlers()
         {
             _useDefaultFileHandlers = true;
             return this;

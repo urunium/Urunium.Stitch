@@ -213,7 +213,7 @@ namespace Urunium.Stitch.Tests
                     destination.BundleFileName = "app.bundle.js";
                 })
                 .WithFileSystem<MyMockFileSystem>()
-                .UseDefaultFileHandlers()
+                .UsingDefaultFileHandlers()
                 .Sew();
 
             var fileSystem = container.Resolve<IFileSystem>();
@@ -243,7 +243,7 @@ namespace Urunium.Stitch.Tests
                     destination.BundleFileName = "app.bundle.js";
                 })
                 .WithFileSystem<MyMockFileSystem>()
-                .UseDefaultFileHandlers()
+                .UsingDefaultFileHandlers()
                 .Sew();
 
             var fileSystem = container.Resolve<IFileSystem>();
