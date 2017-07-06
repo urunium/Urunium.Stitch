@@ -92,6 +92,7 @@ namespace Urunium.Stitch
             {
                 _fileHandlerTypes.Clear();
                 AddFileHandler<BabelModuleTransformer>()
+                    .AddFileHandler<TypescriptModuleTransformer>()
                     .AddFileHandler<LessModuleTransformer>()
                     .AddFileHandler<SassModuleTransformer>()
                     .AddFileHandler<Base64ModuleTransformer>();
