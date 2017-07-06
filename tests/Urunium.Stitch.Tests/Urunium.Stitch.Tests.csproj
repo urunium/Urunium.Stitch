@@ -74,6 +74,7 @@
     <Compile Include="PackagerSassTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RealFileSystemTest.cs" />
+    <Compile Include="TypescriptModuleTransformerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Licenses\ClearScript.main.license" />

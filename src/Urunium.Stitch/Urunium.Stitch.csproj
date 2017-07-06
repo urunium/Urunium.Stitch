@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApacheMimeTypes.cs" />
+    <Compile Include="ModuleTransformers\TypescriptModuleTransformer.cs" />
     <Compile Include="ModuleTransformers\DefaultModuleTransformer.cs" />
     <Compile Include="GlobalsConfig.cs" />
     <Compile Include="PackagerExtendibilityConfig.cs" />
@@ -88,13 +89,18 @@
     <None Include="Licenses\v8.strongtalk.license" />
     <None Include="Licenses\v8.v8.license" />
     <None Include="Licenses\v8.valgrind.license" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\babel.min.js" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\stitchIt.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\typescriptservices.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
