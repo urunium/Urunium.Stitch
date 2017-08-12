@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Urunium.Stitch", "src\Uruni
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Urunium.Stitch.Tests", "tests\Urunium.Stitch.Tests\Urunium.Stitch.Tests.csproj", "{4A1BE5A7-41C9-4014-86CD-6B3CAFE7CB3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UruniumStitchConsumer", "UruniumStitchConsumer\UruniumStitchConsumer.csproj", "{5F1CD6AE-98BF-48BD-B502-1D5F1814A7F8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UruniumStitchConsumer", "tests\UruniumStitchConsumer\UruniumStitchConsumer.csproj", "{5F1CD6AE-98BF-48BD-B502-1D5F1814A7F8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
