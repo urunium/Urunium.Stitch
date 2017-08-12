@@ -2,23 +2,29 @@
 #tool "nuget:?package=NUnit.ConsoleRunner"
 
 var target = Argument("target", "BuildPackages");
+
 var artifactsDir  = Directory("./artifacts/");
 var rootAbsoluteDir = MakeAbsolute(Directory("./")).FullPath;
-
+var testReleaseDir = "./tests/Urunium.Stitch.Tests/bin/Release/";
+var projectDir = "./src/Urunium.Stitch/";
+var releaseDir = projectDir + "bin/Release/";
+var assemblyInfoPath = projectDir + "Properties/AssemblyInfo.cs";
+var msbuildTargetPath = rootAbsoluteDir + "/src/Urunium.Stitch/Msbuild/Urunium-Stitch.Msbuild.targets";
+var solutionName = "Urunium.Stitch.sln";
 
 Task("Clean")
     .Does(() =>
 {
     CleanDirectory(artifactsDir);
-    CleanDirectory("./tests/Urunium.Stitch.Tests/bin/Release/");
-    CleanDirectory("./src/Urunium.Stitch/bin/Release/");
+    CleanDirectory(testReleaseDir);
+    CleanDirectory(releaseDir);
 });
 
 Task("RunTests").IsDependentOn("Clean").Does(() => {
-    MSBuild("./Urunium.Stitch.sln",  
+    MSBuild("./" + solutionName,  
         configurator => configurator.SetConfiguration("Release")
     );
-    var testAssemblies = GetFiles("./tests/Urunium.Stitch.Tests/bin/Release/Urunium.Stitch.Tests.dll");
+    var testAssemblies = GetFiles(testReleaseDir + "Urunium.Stitch.Tests.dll");
     NUnit3(testAssemblies);
 });
 
@@ -27,17 +33,17 @@ Task("Ilmerge")
     .IsDependentOn("Clean")
     .Does(() => {
 
-    MSBuild("./Urunium.Stitch.sln",  
+    MSBuild("./" + solutionName,  
         configurator => configurator.SetConfiguration("Release")
     );
     var assemblyPaths = new Cake.Core.IO.FilePath[]  { 
-        "./src/Urunium.Stitch/bin/Release/dotless.Core.dll", 
-        "./src/Urunium.Stitch/bin/Release/Newtonsoft.Json.dll", 
-        "./src/Urunium.Stitch/bin/Release/System.IO.Abstractions.dll" 
+        releaseDir + "dotless.Core.dll", 
+        releaseDir + "Newtonsoft.Json.dll", 
+        releaseDir + "System.IO.Abstractions.dll" 
     };
     ILRepack(
-        "./src/Urunium.Stitch/bin/Release/Urunium.Stitch.dll", 
-        "./src/Urunium.Stitch/bin/Release/Urunium.Stitch.dll", 
+        releaseDir + "Urunium.Stitch.dll", 
+        releaseDir + "Urunium.Stitch.dll", 
         assemblyPaths, 
         new ILRepackSettings { Internalize = true, TargetKind = TargetKind.Dll });
     DeleteFiles(assemblyPaths);
@@ -47,79 +53,57 @@ Task("BuildPackages")
     .IsDependentOn("Ilmerge")
     .Does(() =>
 {
-    var assemblyInfo = ParseAssemblyInfo("./src/Urunium.Stitch/Properties/AssemblyInfo.cs");
+    var assemblyInfo = ParseAssemblyInfo(assemblyInfoPath);
     Information("Version: {0}", assemblyInfo.AssemblyInformationalVersion);
     var version = string.Format("{0}", assemblyInfo.AssemblyInformationalVersion);
     var author = "Nripedra Nath Newa";
     var licenseUrl = XmlPeek("./Urunium.Stitch-Msbuild.nuspec", "/package/metadata/licenseUrl/text()");
     var projectUrl = XmlPeek("./Urunium.Stitch-Msbuild.nuspec", "/package/metadata/projectUrl/text()");
     var description = XmlPeek("./Urunium.Stitch-Msbuild.nuspec", "/package/metadata/description/text()");
+    var summary = XmlPeek("./Urunium.Stitch-Msbuild.nuspec", "/package/metadata/summary/text()");
 
-    var buildAssemblies = GetFiles("./src/Urunium.Stitch/bin/Release/*.dll");
-    System.Collections.Generic.List<NuSpecContent> nuspecContents = new  System.Collections.Generic.List<NuSpecContent>(
-         new [] {
-            new NuSpecContent {Source = rootAbsoluteDir + "/src/Urunium.Stitch/Msbuild/Urunium-Stitch.Msbuild.targets", Target = "build"},
-            new NuSpecContent {Source = rootAbsoluteDir + "/LICENSE"},
-        }
-    );
+    var buildAssemblies = GetFiles(releaseDir + "*.dll");
+    var jsonConfigs = GetFiles(projectDir + "urunium-stitch.config*.json");
+    var msbuildNuspecContents = GetNuspecContents(new Dictionary<string, IEnumerable<string>> 
+    { 
+        { "build", buildAssemblies.Select(x => x.FullPath).Concat(new [] { msbuildTargetPath } ) },
+        { "Content", jsonConfigs.Select(x => x.FullPath) },
+        { "Root", new [] { rootAbsoluteDir + "/LICENSE" } }    
+    });
 
-    foreach(var buildAssembly in buildAssemblies)
-    {
-        nuspecContents.Add(new NuSpecContent {Source = buildAssembly.FullPath, Target = "build"});
-    }
-
-    var jsonConfigs = GetFiles("./src/Urunium.Stitch/urunium-stitch.config*.json");
-
-    
-    foreach(var jsonConfig in jsonConfigs)
-    {
-        nuspecContents.Add(new NuSpecContent {Source = jsonConfig.FullPath, Target = "Content"});
-    }
-
-    var msbuildNuGetPackSettings = new NuGetPackSettings
+    var msbuildNuspec = new NuGetPackSettings
 	{
         Authors = new []{ author },
         Owners = new []{ author },
-        BasePath = "./src/Urunium.Stitch/bin/Release/",
-        Description = description,
-        Summary = "Webpack like packager built on dotnet.",
-		OutputDirectory = rootAbsoluteDir + @"\artifacts\",
+        BasePath = releaseDir,
+		OutputDirectory = artifactsDir,
 		IncludeReferencedProjects = true,
-        Version                 = version,
-        Files                   = nuspecContents.ToArray(),
+        Version = version,
+        Files = msbuildNuspecContents.ToArray(),
 		Properties = new Dictionary<string, string>
 		{
 			{ "Configuration", "Release" }
 		}
 	};
 
-    var libNuGetPackSettings = new NuGetPackSettings
-	{
-        Authors = new []{ author },
-        Owners = new []{ author },
-        Description = msbuildNuGetPackSettings.Description,
-        Summary = msbuildNuGetPackSettings.Summary,
-        BasePath = msbuildNuGetPackSettings.BasePath,
-        LicenseUrl = new Uri(licenseUrl),
-		OutputDirectory = msbuildNuGetPackSettings.OutputDirectory,
-        ProjectUrl = new Uri(projectUrl),
-		IncludeReferencedProjects = true,
-        Version                 = msbuildNuGetPackSettings.Version,
-        Files                   = new [] {
-            new NuSpecContent { 
-                Source = rootAbsoluteDir + "/src/Urunium.Stitch/bin/Release/*.dll", 
-                Target = "lib"
-            },
-        },
-		Properties = new Dictionary<string, string>
-		{
-			{ "Configuration", "Release" }
-		}
-	};
+    var libNuspec = new NuGetPackSettings 
+    {
+        BasePath = msbuildNuspec.BasePath,
+        OutputDirectory = msbuildNuspec.OutputDirectory,
+        IncludeReferencedProjects = true,
+        Properties = msbuildNuspec.Properties,
+        Version = msbuildNuspec.Version
+    };
 
-    NuGetPack("./src/Urunium.Stitch/Urunium.Stitch.csproj", libNuGetPackSettings);
-    NuGetPack("./Urunium.Stitch-Msbuild.nuspec", msbuildNuGetPackSettings);
-    //
+    using(CreateTempFile(projectDir + "Urunium.Stitch.nuspec", 
+        CreateNuspecXml("Urunium-Stitch", version, author, licenseUrl, projectUrl, description, summary)
+    ))
+    {
+        // core package
+        NuGetPack(projectDir + "Urunium.Stitch.csproj", libNuspec); 
+        // Msbuild package
+        NuGetPack("./Urunium.Stitch-Msbuild.nuspec", msbuildNuspec);
+    }
 });
 
 Task("Default")
@@ -131,3 +115,72 @@ Task("Default")
 });
 
 RunTarget(target);
+
+
+//////////////////////////////////////////
+//           HELPER Functions           //
+//////////////////////////////////////////
+
+System.Collections.Generic.List<NuSpecContent> GetNuspecContents(System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>> files)
+{
+    System.Collections.Generic.List<NuSpecContent> nuspecContents = new System.Collections.Generic.List<NuSpecContent>();
+    foreach(var key in files.Keys)
+    {
+        foreach(var file in files[key]) 
+        {
+            if(key == "Root")
+            {
+                nuspecContents.Add(new NuSpecContent {Source = file });  
+                continue;  
+            }
+            nuspecContents.Add(new NuSpecContent {Source = file, Target = key });
+        }
+    }
+    return nuspecContents;
+}
+
+class DisposableFile : IDisposable
+{
+    string _path;
+    public DisposableFile(string path, string content)
+    {
+        _path = path;
+        System.IO.File.WriteAllText(path, content);
+    }
+
+    public void Dispose()
+    {
+        System.IO.File.Delete(_path);
+    }
+}
+
+IDisposable CreateTempFile(string path, string content)
+{
+    //System.IO.File.WriteAllText(path, content);
+    return new DisposableFile(path, content);
+}
+
+string CreateNuspecXml(string id, string version, string author, string licenseUrl, string projectUrl, string description, string summary)
+{
+    return @"<?xml version='1.0'?>
+<package >
+  <metadata>
+    <id>" + id + @"</id>
+    <version>" + version + @"</version>
+    <title>Urunium Stitch</title>
+    <authors>" + author + @"</authors>
+    <owners>" + author + @"</owners>
+    <licenseUrl>" + licenseUrl + @"</licenseUrl>
+    <projectUrl>" + projectUrl + @"</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>" + description + @"</description>
+    <summary>" + summary + @"</summary>
+    <releaseNotes>
+      ## Version 0.1 ##
+      Init
+    </releaseNotes>
+    <copyright>Copyright 2017</copyright>
+    <tags>c# webpack stitch-it stitch js</tags>
+  </metadata>
+</package>";
+}

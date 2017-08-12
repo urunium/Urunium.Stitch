@@ -10,6 +10,7 @@
     <projectUrl>https://github.com/urunium/Urunium.Stitch</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Webpack like packager built on dotnet.</description>
+    <summary>Webpack like packager built on dotnet.</summary>
     <releaseNotes>
       ## Version 0.1 ##
       Init
