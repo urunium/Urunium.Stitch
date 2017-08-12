@@ -29,7 +29,7 @@ Task("RunTests").IsDependentOn("Clean").Does(() => {
 });
 
 Task("Ilmerge")
-    //.IsDependentOn("RunTests")
+    .IsDependentOn("RunTests")
     .IsDependentOn("Clean")
     .Does(() => {
 
