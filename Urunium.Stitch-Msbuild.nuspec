@@ -1,0 +1,24 @@
+﻿<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Urunium-Stitch.Msbuild</id>
+    <version>$version$</version>
+    <title>Urunium Stitch Msbuild</title>
+    <authors>Nripendra Nath Newa</authors>
+    <owners>Nripendra Nath Newa</owners>
+    <licenseUrl>https://github.com/urunium/Urunium.Stitch/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/urunium/Urunium.Stitch</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Webpack like packager built on dotnet.</description>
+    <releaseNotes>
+      ## Version 0.1 ##
+      Init
+    </releaseNotes>
+    <copyright>Copyright 2017</copyright>
+    <tags>c# webpack stitch-it stitch js</tags>
+    <dependencies />
+  </metadata>
+  <files>
+    <file src="bin\Release\*.dll" target="tools" />
+  </files>
+</package>

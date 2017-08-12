@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Urunium.Stitch", "src\Uruni
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Urunium.Stitch.Tests", "tests\Urunium.Stitch.Tests\Urunium.Stitch.Tests.csproj", "{4A1BE5A7-41C9-4014-86CD-6B3CAFE7CB3B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UruniumStitchConsumer", "UruniumStitchConsumer\UruniumStitchConsumer.csproj", "{5F1CD6AE-98BF-48BD-B502-1D5F1814A7F8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{4A1BE5A7-41C9-4014-86CD-6B3CAFE7CB3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A1BE5A7-41C9-4014-86CD-6B3CAFE7CB3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A1BE5A7-41C9-4014-86CD-6B3CAFE7CB3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F1CD6AE-98BF-48BD-B502-1D5F1814A7F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F1CD6AE-98BF-48BD-B502-1D5F1814A7F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F1CD6AE-98BF-48BD-B502-1D5F1814A7F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F1CD6AE-98BF-48BD-B502-1D5F1814A7F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,5 +38,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{CE6C46A5-F5E5-45FB-84CC-B31336217BE8} = {7155F7CC-57C1-4AEB-A556-706B21C648D5}
 		{4A1BE5A7-41C9-4014-86CD-6B3CAFE7CB3B} = {472AAEA2-413D-46C8-A1EE-B1EA3FE00B85}
+		{5F1CD6AE-98BF-48BD-B502-1D5F1814A7F8} = {472AAEA2-413D-46C8-A1EE-B1EA3FE00B85}
 	EndGlobalSection
 EndGlobal

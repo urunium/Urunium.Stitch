@@ -89,6 +89,7 @@
     <None Include="Licenses\v8.strongtalk.license" />
     <None Include="Licenses\v8.v8.license" />
     <None Include="Licenses\v8.valgrind.license" />
+    <None Include="Msbuild\Urunium-Stitch.Msbuild.targets" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -116,5 +117,7 @@ xcopy /s /y "$(SolutionDir)packages\ClearScript.V8.5.4.9\tools\native\amd64\*.*"
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\..\packages\libsassnet.3.3.7\build\libsassnet.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\libsassnet.3.3.7\build\libsassnet.targets'))" />
+    <Error Condition="!Exists('..\..\packages\GitInfo.1.1.72\build\GitInfo.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\GitInfo.1.1.72\build\GitInfo.targets'))" />
   </Target>
+  <Import Project="..\..\packages\GitInfo.1.1.72\build\GitInfo.targets" Condition="Exists('..\..\packages\GitInfo.1.1.72\build\GitInfo.targets')" />
 </Project>
