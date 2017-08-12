@@ -18,7 +18,4 @@
     <tags>c# webpack stitch-it stitch js</tags>
     <dependencies />
   </metadata>
-  <files>
-    <file src="bin\Release\*.dll" target="tools" />
-  </files>
 </package>

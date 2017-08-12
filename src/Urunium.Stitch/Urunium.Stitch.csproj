@@ -96,6 +96,8 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="urunium-stitch.config.json" />
+    <None Include="urunium-stitch.config.schema.json" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\babel.min.js" />

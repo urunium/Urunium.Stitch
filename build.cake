@@ -68,6 +68,14 @@ Task("BuildPackages")
         nuspecContents.Add(new NuSpecContent {Source = buildAssembly.FullPath, Target = "build"});
     }
 
+    var jsonConfigs = GetFiles("./src/Urunium.Stitch/urunium-stitch.config*.json");
+
+    
+    foreach(var jsonConfig in jsonConfigs)
+    {
+        nuspecContents.Add(new NuSpecContent {Source = jsonConfig.FullPath, Target = "Content"});
+    }
+
     var msbuildNuGetPackSettings = new NuGetPackSettings
 	{
         Authors = new []{ author },

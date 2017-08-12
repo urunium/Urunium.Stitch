@@ -210,11 +210,21 @@ namespace Urunium.Stitch
 
             public Stitcher UsingConfig(StitchConfig stitchConfig)
             {
+                if (_stitcher._container == null)
+                {
+                    _stitcher._container = new Urunium.Stitch.TinyIoC.TinyIoCContainer();
+                }
+
                 return _stitcher.UsingConfig(stitchConfig);
             }
 
             public Stitcher UsingJsonConfig(string config)
             {
+                if (_stitcher._container == null)
+                {
+                    _stitcher._container = new Urunium.Stitch.TinyIoC.TinyIoCContainer();
+                }
+
                 return _stitcher.UsingJsonConfig(config);
             }
         }

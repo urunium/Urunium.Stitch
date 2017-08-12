@@ -1,0 +1,22 @@
+﻿{
+  "From": {
+    "CopyFiles": [],
+    "EntryPoints": [ "./Views/App" ],
+    "Globals": {
+      "react": "React",
+      "react-dom": "ReactDOM"
+    },
+    "RootPath": "$(ProjectDir)"
+  },
+  "Into": {
+    "BundleFileName": "app.js",
+    "Directory": "$(OutDir)Views"
+  },
+  "Extendibility": {
+    "DI": {
+    },
+    "FileHandlers": [
+
+    ]
+  }
+}

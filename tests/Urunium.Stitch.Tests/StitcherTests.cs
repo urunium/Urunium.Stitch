@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
@@ -194,6 +195,37 @@ namespace Urunium.Stitch.Tests
             Assert.True(fileSystem.File.Exists(@"c:\Bundle\font.ttf"));
             Assert.True(fileSystem.File.ReadAllText(@"c:\Bundle\app.bundle.js").Contains("'font.ttf' : function(require, exports, module) "));
             Assert.True(fileSystem.File.ReadAllText(@"c:\Bundle\app.bundle.js").Contains("// Comment added from MyPackageBundler"));
+        }
+
+        [Test]
+        public void BuildUsingJsonConfigWithoutSpecifyingContainer()
+        {
+            var json = @"{
+  'From': {
+    'CopyFiles': [],
+    'EntryPoints': [ './App' ],
+    'Globals': {
+      'react': 'React',
+      'react-dom': 'ReactDOM'
+    },
+    'RootPath': '$(ProjectDir)'
+  },
+  'Into': {
+    'BundleFileName': 'app.js',
+    'Directory': '$(OutDir)Views'
+  },
+  'Extendibility': {
+    'DI': {
+    },
+    'FileHandlers': [
+
+    ]
+  }
+}";
+            json = json.Replace("$(ProjectDir)", "c:\\\\App").Replace("$(OutDir)", "c:\\\\Bundle\\\\");
+            MyMockFileSystem fileSystem = new MyMockFileSystem();
+            Stitcher.Stitch.UsingJsonConfig(json).WithFileSystem(fileSystem).Sew();
+            Assert.True(fileSystem.File.Exists(@"c:\Bundle\Views\app.js"));
         }
 
         [Test]

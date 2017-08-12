@@ -50,15 +50,13 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="urunium-stitch.config.json" />
+    <None Include="urunium-stitch.config.schema.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\App.jsx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-if not exist "$(TargetDir)" md "$(TargetDir)"
-xcopy /s /y "$(SolutionDir)packages\ClearScript.V8.5.4.9\tools\native\x86\*.*" "$(TargetDir)"
-if not exist "$(TargetDir)" md "$(TargetDir)"
-xcopy /s /y "$(SolutionDir)packages\ClearScript.V8.5.4.9\tools\native\amd64\*.*" "$(TargetDir)"</PostBuildEvent>
-  </PropertyGroup>
   <Import Project="..\packages\Urunium-Stitch.Msbuild.1.0.0\build\Urunium-Stitch.Msbuild.targets" Condition="Exists('..\packages\Urunium-Stitch.Msbuild.1.0.0\build\Urunium-Stitch.Msbuild.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

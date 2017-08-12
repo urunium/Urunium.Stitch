@@ -19,31 +19,24 @@ namespace Urunium.Stitch
 
         public override bool Execute()
         {
-            Log.LogMessage("Stitch Task");
-            if (string.IsNullOrWhiteSpace(JsonConfig))
+            bool success = false;
+            try
             {
-                Stitcher.Stitch.From((source) =>
-                {
-                    source.RootPath = RootPath;
-                    source.EntryPoints = new[] { "App" };
-                    source.Globals = new GlobalsConfig
-                    {
-                        ["react"] = "React",
-                        ["react-dom"] = "ReactDOM"
-                    };
-                }).Into((dest) =>
-                {
-                    dest.Directory = DestinationPath;
-                    dest.BundleFileName = "App.js";
-                }).UsingDefaultFileHandlers()
-                .UsingDefaultFileSystem().Sew();
+                Log.LogMessage("Stitch Task");
+                var json = File.ReadAllText(JsonConfig).Replace("$(ProjectDir)", RootPath.Replace("\\", "\\\\")).Replace("$(OutDir)", DestinationPath.Replace("\\", "\\\\"));
+                Log.LogMessage($"Stitch Task with following Config: {json}");
+                Stitcher.Stitch.UsingJsonConfig(json).Sew();
+                success = true;
             }
-            else
+            catch (Exception ex)
             {
-                Stitcher.Stitch.UsingJsonConfig(File.ReadAllText(JsonConfig)).Sew();
+                Log.LogError(ex.ToString());
             }
-            Log.LogMessage("End Stitch Task");
-            return true;
+            finally
+            {
+                Log.LogMessage("End Stitch Task");
+            }
+            return success;
         }
     }
 }
