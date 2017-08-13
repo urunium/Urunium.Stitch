@@ -1,5 +1,6 @@
 #tool "nuget:?package=ILRepack"
 #tool "nuget:?package=NUnit.ConsoleRunner"
+#tool "nuget:?package=GitVersion.CommandLine"
 
 var target = Argument("target", "BuildPackages");
 
@@ -49,9 +50,12 @@ Task("BuildPackages")
     .IsDependentOn("Ilmerge")
     .Does(() =>
 {
-    var assemblyInfo = ParseAssemblyInfo(assemblyInfoPath);
-    Information("Version: {0}", assemblyInfo.AssemblyInformationalVersion);
-    var version = string.Format("{0}", assemblyInfo.AssemblyInformationalVersion);
+
+	var r = GitVersion(new GitVersionSettings {
+        UpdateAssemblyInfo = false
+    });
+	Information("Version: {0}", r.FullSemVer);
+    var version = string.Format("{0}", r.FullSemVer);
     var author = "Nripedra Nath Newa";
     var licenseUrl = XmlPeek("./Urunium.Stitch-Msbuild.nuspec", "/package/metadata/licenseUrl/text()");
     var projectUrl = XmlPeek("./Urunium.Stitch-Msbuild.nuspec", "/package/metadata/projectUrl/text()");

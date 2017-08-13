@@ -37,8 +37,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion(ThisAssembly.Git.SemVer.Major + "." + ThisAssembly.Git.SemVer.Minor + "." + ThisAssembly.Git.SemVer.Patch)]
 
 [assembly: AssemblyInformationalVersion(
-    ThisAssembly.Git.SemVer.Major + "." +
-    ThisAssembly.Git.SemVer.Minor + "." +
-    ThisAssembly.Git.Commits + "-" +
-    ThisAssembly.Git.Branch + "+" +
-    ThisAssembly.Git.Commit)]
+    ThisAssembly.Git.SemVer.Major + "." + 
+    ThisAssembly.Git.SemVer.Minor + "." + 
+    ThisAssembly.Git.SemVer.Patch +
+    ThisAssembly.Git.SemVer.DashLabel)]
