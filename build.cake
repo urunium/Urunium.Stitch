@@ -20,27 +20,23 @@ Task("Clean")
     CleanDirectory(releaseDir);
 });
 
-Task("RunTests").IsDependentOn("Clean").Does(() => {
-    MSBuild("./" + solutionName,  
-        configurator => configurator.SetConfiguration("Release")
-    );
-    var testAssemblies = GetFiles(testReleaseDir + "Urunium.Stitch.Tests.dll");
-    NUnit3(testAssemblies);
-});
-
 Task("Ilmerge")
-    .IsDependentOn("RunTests")
     .IsDependentOn("Clean")
     .Does(() => {
 
     MSBuild("./" + solutionName,  
-        configurator => configurator.SetConfiguration("Release")
+       configurator => configurator.SetConfiguration("Release")
     );
+
+    var testAssemblies = GetFiles(testReleaseDir + "Urunium.Stitch.Tests.dll");
+    NUnit3(testAssemblies);
+
     var assemblyPaths = new Cake.Core.IO.FilePath[]  { 
         releaseDir + "dotless.Core.dll", 
         releaseDir + "Newtonsoft.Json.dll", 
         releaseDir + "System.IO.Abstractions.dll" 
     };
+	Information( releaseDir + "Urunium.Stitch.dll");
     ILRepack(
         releaseDir + "Urunium.Stitch.dll", 
         releaseDir + "Urunium.Stitch.dll", 
