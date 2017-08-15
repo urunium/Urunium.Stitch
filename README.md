@@ -210,3 +210,7 @@ Json config is also supported, as follows:
             Assert.True(fileSystem.File.ReadAllText(@"c:\Bundle\app.bundle.js").Contains("// Comment added from MyPackageBundler"));
         }
 ```
+
+# Interested in contributing?
+Fork the project from github and send PR. Only tested using Visual studio 2017, but 2015 may work as well.
+Execute `build.bat` or `build.ps1`. Final nuget packages are created at `artifact` folder.
