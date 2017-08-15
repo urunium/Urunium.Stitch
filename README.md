@@ -4,7 +4,20 @@ Stitch together: js modules, css, images etc. in commonjs. Inspired by https://g
 # Goal
 Goal of this project is to provide [webpack](https://webpack.github.io/) like capability, to bundle various resources into single commonjs resource.
 
-## A brief look:
+## Getting started
+
+In near future (nuget package is not available yet!):
+```
+Install-Package Urunium-Stitch
+```
+Or,
+```
+Install-Package Urunium-Stitch.Msbuild
+```
+
+Most likely all you'd need `Urunium-Stitch.Msbuild` package which integrates with the msbuild process and can be configured using [Json based](#usingjsonconfig) config. For more flexibility or extending capabalities use `Urunium-Stitch` package. This provides code based approach which needs to be written into appropriate place, as per project's need and architecture.
+
+## Brief look at Usage:
 
 ```c#
         [Test]
