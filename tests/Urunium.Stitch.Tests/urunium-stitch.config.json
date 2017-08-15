@@ -17,7 +17,7 @@
       "IFileSystem": "MyFileSystem",
       "PackageCompiler": "MyPackageCompiler"
     },
-    "FileHandlers": [
+    "Transformers": [
 
     ]
   }

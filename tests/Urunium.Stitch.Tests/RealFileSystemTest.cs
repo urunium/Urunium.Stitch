@@ -27,7 +27,7 @@ namespace Urunium.Stitch.Tests
                     dest.BundleFileName = "app.bundle.js";
                 })
                 .UsingDefaultFileSystem()
-                .UsingDefaultFileHandlers()
+                .UsingDefaultTransformers()
                 .Sew();
 
             Assert.True(System.IO.File.Exists(System.IO.Path.Combine(location, "Views\\app.bundle.js")));

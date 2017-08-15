@@ -47,10 +47,10 @@ namespace Urunium.Stitch.ModuleTransformers
                 }
             });
 
-            CssToJsModule cssHandler = new CssToJsModule();
+            CssToJsModule cssTransformer = new CssToJsModule();
             var css = compiler.Compile().Output;
             module.OriginalContent = module.OriginalContent ?? content;
-            module.TransformedContent = cssHandler.Build(css, moduleId);
+            module.TransformedContent = cssTransformer.Build(css, moduleId);
             return module;
         }
     }

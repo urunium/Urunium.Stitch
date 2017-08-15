@@ -13,8 +13,8 @@ namespace Urunium.Stitch
         private Urunium.Stitch.TinyIoC.TinyIoCContainer _container;
         private DestinationConfig _destinationConfig;
         private SourceConfig _sourceConfig;
-        private List<Type> _fileHandlerTypes = new List<Type>();
-        private bool _useDefaultFileHandlers = true;
+        private List<Type> _transformerTypes = new List<Type>();
+        private bool _useDefaultTransformers = true;
 
         private Stitcher()
         {
@@ -49,9 +49,9 @@ namespace Urunium.Stitch
             return this;
         }
 
-        public Stitcher UsingDefaultFileHandlers()
+        public Stitcher UsingDefaultTransformers()
         {
-            _useDefaultFileHandlers = true;
+            _useDefaultTransformers = true;
             return this;
         }
 
@@ -66,12 +66,12 @@ namespace Urunium.Stitch
             return WithPackageBundler<PackageBundler>();
         }
 
-        public Stitcher AddFileHandler<THandler>() where THandler : class, IModuleTransformer
+        public Stitcher AddTransformer<TTransformer>() where TTransformer : class, IModuleTransformer
 
         {
-            _useDefaultFileHandlers = false;
-            _container.Register<THandler, THandler>();
-            _fileHandlerTypes.Add(typeof(THandler));
+            _useDefaultTransformers = false;
+            _container.Register<TTransformer, TTransformer>();
+            _transformerTypes.Add(typeof(TTransformer));
             return this;
         }
 
@@ -88,19 +88,19 @@ namespace Urunium.Stitch
                 UsingDefaultPackageBundler();
             }
 
-            if (_useDefaultFileHandlers)
+            if (_useDefaultTransformers)
             {
-                _fileHandlerTypes.Clear();
-                AddFileHandler<BabelModuleTransformer>()
-                    .AddFileHandler<TypescriptModuleTransformer>()
-                    .AddFileHandler<LessModuleTransformer>()
-                    .AddFileHandler<SassModuleTransformer>()
-                    .AddFileHandler<Base64ModuleTransformer>();
+                _transformerTypes.Clear();
+                AddTransformer<BabelModuleTransformer>()
+                    .AddTransformer<TypescriptModuleTransformer>()
+                    .AddTransformer<LessModuleTransformer>()
+                    .AddTransformer<SassModuleTransformer>()
+                    .AddTransformer<Base64ModuleTransformer>();
             }
 
             fileSystem = _container.Resolve<IFileSystem>();
 
-            var packager = new Packager(fileSystem, _fileHandlerTypes.Select(x => _container.Resolve(x)).Cast<IModuleTransformer>().ToArray());
+            var packager = new Packager(fileSystem, _transformerTypes.Select(x => _container.Resolve(x)).Cast<IModuleTransformer>().ToArray());
 
             var package = packager.Package(_sourceConfig);
 
@@ -166,14 +166,14 @@ namespace Urunium.Stitch
                         _container.Register(registerType, implementationType);
                     }
                 }
-                if (config.Extendibility.FileHandlers?.Count > 0)
+                if (config.Extendibility.Transformers?.Count > 0)
                 {
-                    _useDefaultFileHandlers = false;
-                    _fileHandlerTypes.Clear();
-                    foreach (var fileHandlerTypeName in config.Extendibility.FileHandlers)
+                    _useDefaultTransformers = false;
+                    _transformerTypes.Clear();
+                    foreach (var moduleTransformerTypeName in config.Extendibility.Transformers)
                     {
-                        Type fileHandlerType = Type.GetType(fileHandlerTypeName, true);
-                        _fileHandlerTypes.Add(fileHandlerType);
+                        Type moduleTransformerType = Type.GetType(moduleTransformerTypeName, true);
+                        _transformerTypes.Add(moduleTransformerType);
                     }
                 }
             }

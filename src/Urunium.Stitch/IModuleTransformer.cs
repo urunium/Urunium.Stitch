@@ -9,7 +9,7 @@ namespace Urunium.Stitch
     public interface IModuleTransformer
     {
         /// <summary>
-        /// Gets the file extension associated with this handler
+        /// Gets the file extension associated with this transformer
         /// </summary>
         IEnumerable<string> Extensions { get; }
 

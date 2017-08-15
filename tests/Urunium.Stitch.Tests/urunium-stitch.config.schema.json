@@ -67,12 +67,12 @@
             }
           }
         },
-        "FileHandlers": {
+        "Transformers": {
           "type": "array",
           "description": "List of Module Transformers",
           "items": {
             "type": "string",
-            "description": "Fully qualified name class names that implements IFileHandler interface"
+            "description": "Fully qualified name class names that implements IModuleTransformer interface"
           }
         },
         "PackageCompiler": {

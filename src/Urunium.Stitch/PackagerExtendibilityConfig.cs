@@ -30,19 +30,19 @@ namespace Urunium.Stitch
         public Dictionary<string, string> DI { get; set; }
 
         /// <summary>
-        /// List of FileHandlers. If any one of handler is provided default handlers will be discarded.
-        /// If need to add new handler on top of default handlers them all default handlers must also be listed.
+        /// List of Transformers. If any one of transformer is provided default transformers will be discarded.
+        /// If need to add new transformer on top of default transformers them all default transformers must also be listed.
         /// e.g.:
         /// new PackagerExtendibilityConfig
         /// {
-        ///    FileHandlers = new List&lt;string&gt
+        ///    Transformers = new List&lt;string&gt
         ///    {
-        ///         "Urunium.Stitch.BabelFileHandler",
-        ///         "Urunium.Stitch.LessFileHandler",
-        ///         "Urunium.Stitch.SassFileHandler",
+        ///         "Urunium.Stitch.ModuleTransformers.BabelModuleTransformer",
+        ///         "Urunium.Stitch.ModuleTransformers.LessModuleTransformer",
+        ///         "Urunium.Stitch.ModuleTransformers.SassModuleTransformer",
         ///    }
         /// }
         /// </summary>
-        public List<string> FileHandlers { get; set; }
+        public List<string> Transformers { get; set; }
     }
 }

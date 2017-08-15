@@ -13,10 +13,10 @@ namespace Urunium.Stitch
         ModuleFinder _moduleFinder;
         IFileSystem _fileSystem;
         IEnumerable<IModuleTransformer> _transformers;
-        public Packager(IFileSystem fileSystem, IEnumerable<IModuleTransformer> handlers)
+        public Packager(IFileSystem fileSystem, IEnumerable<IModuleTransformer> transformers)
         {
             _fileSystem = fileSystem;
-            _transformers = handlers;
+            _transformers = transformers;
 
             _moduleFinder = new ModuleFinder(_fileSystem, _transformers.SelectMany(x => x.Extensions));
         }

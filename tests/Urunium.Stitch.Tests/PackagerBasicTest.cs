@@ -25,7 +25,7 @@ namespace Urunium.Stitch.Tests
 
             var packager = new Packager(
                             fileSystem: fileSystem,
-                            handlers: new IModuleTransformer[]
+                            transformers: new IModuleTransformer[]
                             {
                                 new BabelModuleTransformer(fileSystem)
                             });
@@ -55,7 +55,7 @@ namespace Urunium.Stitch.Tests
 
             var packager = new Packager(
                             fileSystem: fileSystem,
-                            handlers: new IModuleTransformer[]
+                            transformers: new IModuleTransformer[]
                             {
                                 new BabelModuleTransformer(fileSystem)
                             });
@@ -87,7 +87,7 @@ namespace Urunium.Stitch.Tests
 
             var packager = new Packager(
                             fileSystem: fileSystem,
-                            handlers: new IModuleTransformer[]
+                            transformers: new IModuleTransformer[]
                             {
                                 new BabelModuleTransformer(fileSystem)
                             });
