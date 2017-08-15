@@ -151,3 +151,49 @@ While configuring the source, we can specify global modules. Global modules will
         }
 ```
 As shown above instead of configuring each parts individually, we can also configure in one scoop using `StitchConfig` and `UsingConfig` method.
+
+## UsingJsonConfig
+
+Json config is also supported, as follows:
+
+```c#
+        [Test]
+        public void BuildUsingJsonConfigTest()
+        {
+            var container = new Urunium.Stitch.TinyIoC.TinyIoCContainer();
+            var config = @"{
+                'From': {
+                    'RootPath': 'c:\\App',
+                    'EntryPoints': ['./App'],
+                    'CopyFiles': ['./font.ttf']
+                },
+                'Into': {
+                    'Directory': 'c:\\Bundle',
+                    'BundleFileName': 'app.bundle.js'
+                },
+                'Extendibility': {
+                    'DI': {
+                      'System.IO.Abstractions.IFileSystem, System.IO.Abstractions': 'Urunium.Stitch.Tests.StitcherTests+MyMockFileSystem, Urunium.Stitch.Tests',
+                      'Urunium.Stitch.PackageBundler, Urunium.Stitch': 'Urunium.Stitch.Tests.StitcherTests+MyPackageBundler, Urunium.Stitch.Tests',
+                      'Urunium.Stitch.Tests.StitcherTests+ICommentWriter, Urunium.Stitch.Tests': 'Urunium.Stitch.Tests.StitcherTests+CommentWriter, Urunium.Stitch.Tests'
+                    },
+                    'Transformers': [
+                            'Urunium.Stitch.ModuleTransformers.BabelModuleTransformer',
+                            'Urunium.Stitch.ModuleTransformers.LessModuleTransformer',
+                            'Urunium.Stitch.ModuleTransformers.SassModuleTransformer',
+                            'Urunium.Stitch.ModuleTransformers.Base64ModuleTransformer',
+                            'Urunium.Stitch.Tests.StitcherTests+TestModuleTransformer, Urunium.Stitch.Tests'
+                    ]
+                }
+            }";
+            Stitcher.Stitch
+                .UsingContainer(container)
+                .UsingJsonConfig(config).Sew();
+
+            var fileSystem = container.Resolve<IFileSystem>();
+            Assert.True(fileSystem.File.Exists(@"c:\Bundle\app.bundle.js"));
+            Assert.True(fileSystem.File.Exists(@"c:\Bundle\font.ttf"));
+            Assert.True(fileSystem.File.ReadAllText(@"c:\Bundle\app.bundle.js").Contains("'font.ttf' : function(require, exports, module) "));
+            Assert.True(fileSystem.File.ReadAllText(@"c:\Bundle\app.bundle.js").Contains("// Comment added from MyPackageBundler"));
+        }
+```
